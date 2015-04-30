@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html data-ng-app="myApp">
+<head>
+    <title>Book demo</title>
+</head>
+<body>
+
+<h1>Book demo</h1>
+
+<a id="homeLink" href="/#/">Home</a> | <a id="newLink" href="/#/books/new">New</a>
+
+<div data-ng-view=""></div>
+
+<hr>
+<div id="myCtrl" data-ng-controller="myCtrl as settings">{{whoami}}</div>
+
+<!-- Lib -->
+<script src="./javascripts/lib/angular.min.js"></script>
+<script src="./javascripts/lib/angular-route.min.js"></script>
+<script src="./javascripts/lib/angular-resource.min.js"></script>
+
+<!-- App -->
+<script src="./javascripts/app.js"></script>
+<script src="./javascripts/controllers.js"></script>
+<script src="./javascripts/services.js"></script>
+
+
+</body>
+</html>

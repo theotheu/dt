@@ -1,0 +1,20 @@
+<h2>Book</h2>
+
+
+<form name="bookForm">
+
+    <p>Id: <input type="text" data-ng-model="books.doc._id" readonly></p>
+
+    <p>Title: <input type="text" data-ng-model="books.doc.title"></p>
+
+    <p>Author: <input type="text" data-ng-model="books.doc.author"></p>
+
+    <p>Description: <input type="text" data-ng-model="books.doc.description"></p>
+
+    <button type="button" data-ng-click="delete()" id="deleteBtn">Delete</button>
+
+    <button type="button" data-ng-click="save()" id="saveBtn">Save
+    </button>
+
+
+</form>
