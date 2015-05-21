@@ -2,6 +2,6 @@ TODO:
 
 * User administration, CRUD operations + user interface --> Emiel
 * Sessions & cookies/tokens --> Marco
-* Business Rules, CRUD Operations --> Michiel
+* Business Rules, CRUD Operations --> Michiel, Tim
 * History van deployments in database --> Joost
 * OAuth2 --> Sander
