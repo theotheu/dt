@@ -1,9 +1,26 @@
 /*jslint node: true */
 /*globals myApp */
-
+/**
+ *
+ * @param $scope
+ * @param businessRulesService
+ * @constructor
+ */
+function BusinessRuleListCtrl($scope, businessRulesService) {
+    "use strict";
+    $scope.businessRules = businessRulesService.businessRules.get();
+}
+/**
+ *
+ * @param $scope
+ * @param businessRulesService
+ * @constructor
+ */
+function BusinessRuleDetailCtrl($scope, businessRulesService) {
+    console.log("Geen idee wat we hier doen maar ok.");
+}
 
 /**
- * TODO: create controller for book list
  * @param $scope
  * @param booksService
  * @constructor
@@ -15,7 +32,6 @@ function BookListCtrl($scope, booksService) {
 }
 
 /**
- * TODO: create controller for retrieving 1 book, create and delete
  * @param $scope
  * @param $routeParams
  * @param booksService
@@ -56,7 +72,7 @@ function BookDetailCtrl($scope, $routeParams, $location, booksService) {
 
 myApp.controller('myCtrl', function ($scope) {
     "use strict";
-    // TODO: bind settings with whoami
+    //TODO: bind settings with whoami
     $scope.whomai = "theotheu";
 });
 

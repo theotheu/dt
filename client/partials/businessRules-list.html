@@ -1,0 +1,6 @@
+<h2>BusinessRules</h2>
+<input ng-model="query" placeholder="Type to start searching...">
+
+<ul id="bookList">
+    <li data-ng-repeat="businessRule in businessRules.doc | filter:query"><a href="/#/businessRules/{{businessRule._id}}">{{businessRule.name}}, {{businessRule.method}}, {{businessRule.property}}</a></li>
+</ul>

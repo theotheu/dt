@@ -1,4 +1,4 @@
-/*global angular, BookListCtrl, BookDetailCtrl */
+/*global angular, BookListCtrl, BookDetailCtrl, BusinessRuleListCtrl, BusinessRuleDetailCtrl */
 
 
 /**
@@ -27,6 +27,20 @@ var myApp = angular.module('myApp', ['myApp.services', 'ngRoute'])
         // When no valid route is provided
         $routeProvider.otherwise({
             redirectTo: "/books"
+        });
+
+        /** BUSINESS RULE PAGES**/
+
+        // Get all business rules
+        $routeProvider.when('/businessrules', {
+            templateUrl: 'partials/businessRules-list.html',
+            controller: BusinessRuleListCtrl
+        });
+
+        // Get 1 book
+        $routeProvider.when('/businessrules/:_id', {
+            templateUrl: 'partials/businessRules-detail.html',
+            controller: BusinessRuleDetailCtrl
         });
 
     }]);
