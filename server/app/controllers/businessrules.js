@@ -67,27 +67,6 @@ exports.list = function (req, res) {
 };
 
 /**
- * RETRIEVE _one_ book
- * --------------------
- * Controller to retrieve _one_ books.
- *
- *
- * - meta: These are all optional and free to extend
- *   - method name: The name of the method
- *   - timestamp
- *   - filename: The name of the file. Use '__filename' for this.
- *   - duration: Duration of execution, time spend on server or other meaningful metric
- * - doc: The result object is either an object or null.
- * - err: If no errors, it has the value 'null'
- *
- * @module books/detail
- * @param req
- * @param res
- * @see http://docs.mongodb.org/manual/reference/method/db.collection.findOne/
- * @see http://mongoosejs.com/docs/api.html#model_Model.findOne
- */
-
-/**
  * Controller to get a single business rule.
  * @param req http request
  * @param res http response
