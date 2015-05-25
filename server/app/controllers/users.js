@@ -20,6 +20,10 @@ exports.create = function (req, res) {
 
     var doc = new User(req.body), salt;
 
+    /**
+     * Create a synchronous bcrypt of the password.
+     * @see https://github.com/ncb000gt/node.bcrypt.js/
+     */
     salt = bcrypt.genSaltSync(10);
     doc.password = bcrypt.hashSync(doc.password, salt);
 
@@ -141,7 +145,15 @@ exports.updateOne = function (req, res) {
             };
 
             return res.send(retObj);
-        };
+        },
+        salt;
+
+    /**
+     * Create a synchronous bcrypt of the password.
+     * @see https://github.com/ncb000gt/node.bcrypt.js/
+     */
+    salt = bcrypt.genSaltSync(10);
+    update.password = bcrypt.hashSync(update.password, salt);
 
     User
         .findOneAndUpdate(conditions, update, options, callback);
