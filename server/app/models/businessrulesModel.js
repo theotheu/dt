@@ -39,6 +39,21 @@
         {collection: 'businessrules'});
 
     /**
+     * Custom validators
+     *
+     * @class Validator/BusinessRule/description
+     * @returns true or false. In case of ```false```, a message is returned as well.
+     * @see http://mongoosejs.com/docs/validation.html
+     */
+    businessRuleSchema.path('description').validate(function (val) {
+        return (val !== undefined && val !== null && val.length >= 8);
+    }, 'Invalid description');
+
+    businessRuleSchema.path('equation').validate(function (val) {
+        return (val !== undefined && val !== null && val >- 5);
+    }, 'Invalid equation');
+
+    /**
      * Instructions, hints and questions.
      * - Instruction: Create a model for the defined schema.
      * - Question: What are the differences between a 'Model' and a 'Schema Type'? Use the references to motivate your answer.
