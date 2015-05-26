@@ -9,6 +9,9 @@
      */
     var fs = require('fs'),                             // Used to read files from the filesystem (__dirname)
         express = require('express'),                   // Fast, unopinionated, minimalist web framework for Node.js
+        passport = require('passport'),
+        util = require('util'),
+        GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
         bodyParser = require("body-parser"),            // This does not handle multipart bodies, due to their complex and typically large nature. For multipart bodies, you may be interested in the following modules:
         env,
         config,
@@ -18,6 +21,37 @@
         app,
         routes_path,
         route_files;
+
+    var configAuth = require('./config/auth');
+
+    passport.serializeUser(function(user, done) {
+        done(null, user);
+    });
+
+    passport.deserializeUser(function(obj, done) {
+        done(null, obj);
+    });
+
+    // Use the GoogleStrategy within Passport.
+    // Strategies in Passport require a `verify` function, which accept
+    // credentials (in this case, an accessToken, refreshToken, and Google
+    // profile), and invoke a callback with a user object.
+    passport.use(new GoogleStrategy({
+            clientID: configAuth.googleAuth.clientID,
+            clientSecret: configAuth.googleAuth.clientSecret,
+            callbackURL: configAuth.googleAuth.callbackURL
+        },
+        function(accessToken, refreshToken, profile, done) {
+            // asynchronous verification, for effect...
+            process.nextTick(function () {
+                // To keep the example simple, the user's Google profile is returned to
+                // represent the logged-in user.  In a typical application, you would want
+                // to associate the Google account with a user record in your database,
+                // and return that user instead.
+                return done(null, profile);
+            });
+        }
+    ));
 
     /**
      * Load configuration
@@ -79,6 +113,11 @@
         });
     }
 
+    // Initialize Passport!  Also use passport.session() middleware, to support
+    // persistent login sessions (recommended).
+    app.use(passport.initialize());
+    app.use(passport.session());
+
     /**
      * Bootstrap routes
      * @type {string}
@@ -103,6 +142,5 @@
     });
 
     module.exports = app;
-
 }());
 
