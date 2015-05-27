@@ -3,6 +3,7 @@
 "use strict";
 
 var express = require('express'),
+    fs = require('fs'),
     bodyParser = require('body-parser'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
