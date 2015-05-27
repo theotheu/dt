@@ -180,6 +180,11 @@ var config = {
             }
         ],
 
+        logFile: {
+            name: 'error_log.txt',
+            type: 'json'
+        },
+
         stdoutErrors: true
     }
     ;
