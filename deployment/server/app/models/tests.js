@@ -8,9 +8,11 @@
     var mongoose = require('mongoose'),
         Schema = mongoose.Schema,
         schemaName,
-        modelName;
+        db;
 
-    schemaName = new Schema({
+    db = mongoose.connect('mongodb://server3.tezzt.nl/S513753-his');
+
+    schemaName = new mongoose.Schema({
             deploymentId: {type: String, required: true, unique: true},
             webLog: {type: String},
             bashLog: {type: String},
@@ -21,7 +23,6 @@
         },
         {collection: 'tests'});
 
-    modelName = "Test";
-    mongoose.model(modelName, schemaName);
+    module.exports = db.model('Test', schemaName);
 
 }());
