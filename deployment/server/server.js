@@ -88,6 +88,28 @@ app.post('/webhook', function (req, res) {
                 console.log('Message sent: ' + info.response);
             }
         });
+
+        var Test = require('./app/models/tests');
+
+        var staticAnalyzerLog = "";
+        if (fs.existsSync("../../tests/static-analyzer/error_log.txt")) {
+            staticAnalyzerLog = fs.readFileSync("../../tests/static-analyzer/error_log.txt").toString();
+        } else {
+            staticAnalyzerLog = fs.readFileSync("../../tests/static-analyzer/static-analyzer-results.log");
+        };
+
+        var test = new Test({
+            deploymentId: "Deployment " + Date.now(),
+            webLog: {},
+            bashLog: fs.readFileSync("./pullingAndTesting.sh.log"),
+            staticTestLog: staticAnalyzerLog,
+            unitTestLog: fs.readFileSync("../../tests/unit-tests/unit-tests-results.json").toString(),
+            e2eTestLog: fs.readFileSync("../../tests/e2e/e2e_result_log.json").toString()
+        });
+
+        test.save(function (err) {
+        });
+
     };
 
     if (req.body.repository.url === config.repoUrl) {
