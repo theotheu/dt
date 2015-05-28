@@ -1,8 +1,7 @@
-#TODO:
 
 #ALLEN
 * ALLEN: uitzoeken dat alleen de webhook werkt op de development branch en niet op andere branches
-* ALLEN: Documenteer eigen API op http://server3.tezzt.nl:8080/#/ en http://server3.tezzt.nl/~dt
+* ALLEN: Documenteer _eigen_ API op http://server3.tezzt.nl:8080/#/ en http://server3.tezzt.nl/~dt
 
 
 * Joost: opslaan van deployment tests CRUD afmaken in nieuwe controller + UI (in angular)
