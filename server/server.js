@@ -13,6 +13,8 @@
         util = require('util'),
         GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
         bodyParser = require("body-parser"),            // This does not handle multipart bodies, due to their complex and typically large nature. For multipart bodies, you may be interested in the following modules:
+        cookieParser = require('cookie-parser'),
+        session = require('express-session'),
         env,
         config,
         mongoose,
@@ -22,32 +24,24 @@
         routes_path,
         route_files;
 
-    var configAuth = require('./config/auth');
+    env = process.env.NODE_ENV || 'development';
+    var configAuth = require('./config/oauth.config')[env];
 
-    passport.serializeUser(function(user, done) {
+    passport.serializeUser(function (user, done) {
         done(null, user);
     });
 
-    passport.deserializeUser(function(obj, done) {
+    passport.deserializeUser(function (obj, done) {
         done(null, obj);
     });
 
-    // Use the GoogleStrategy within Passport.
-    // Strategies in Passport require a `verify` function, which accept
-    // credentials (in this case, an accessToken, refreshToken, and Google
-    // profile), and invoke a callback with a user object.
     passport.use(new GoogleStrategy({
             clientID: configAuth.googleAuth.clientID,
             clientSecret: configAuth.googleAuth.clientSecret,
             callbackURL: configAuth.googleAuth.callbackURL
         },
-        function(accessToken, refreshToken, profile, done) {
-            // asynchronous verification, for effect...
+        function (accessToken, refreshToken, profile, done) {
             process.nextTick(function () {
-                // To keep the example simple, the user's Google profile is returned to
-                // represent the logged-in user.  In a typical application, you would want
-                // to associate the Google account with a user record in your database,
-                // and return that user instead.
                 return done(null, profile);
             });
         }
@@ -57,7 +51,6 @@
      * Load configuration
      * @type {*|string}
      */
-    env = process.env.NODE_ENV || 'development';
     config = require('./config/config.js')[env];
 
     /**
@@ -113,8 +106,11 @@
         });
     }
 
-    // Initialize Passport!  Also use passport.session() middleware, to support
-    // persistent login sessions (recommended).
+    /**
+     * Passport to enable authentication
+     */
+    app.use(cookieParser());                                            //read cookies (needed for auth)
+    app.use(session({secret: 'meanstackhan', maxAge: null, resave: true, saveUninitialized: false}));  //session for authentication
     app.use(passport.initialize());
     app.use(passport.session());
 
@@ -125,8 +121,13 @@
     routes_path = __dirname + '/routes';
     route_files = fs.readdirSync(routes_path);
     route_files.forEach(function (file) {
-        var route = require(routes_path + '/' + file);                  // Get the route
-        app.use('/api', route);
+        if (file == 'auth.js') {
+            var route = require(routes_path + '/' + file)(passport, isAuthenticated);
+            app.use(route);
+        } else {
+            var route = require(routes_path + '/' + file);
+            app.use('/api', route);
+        }
     });
 
     /**
@@ -142,5 +143,12 @@
     });
 
     module.exports = app;
-}());
 
+    // route middleware to make sure a user is logged in
+    function isAuthenticated(req, res, next) {
+        if (req.isAuthenticated()) {
+            return next();
+        }
+        res.sendStatus(401);
+    }
+}());
