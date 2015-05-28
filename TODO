@@ -1,6 +1,8 @@
 TODO:
 
 * ALLEN: uitzoeken dat alleen de webhook werkt op de development branch en niet op andere branches
+* ALLEN: Documenteer eigen API op http://server3.tezzt.nl:8080/#/
+
 * Joost: opslaan van deployment tests CRUD afmaken in nieuwe controller + UI (in angular)
 * Joost: unit + e2e voor deployments
 * Marco: Integratie authenticatie met user database 
@@ -12,7 +14,6 @@ TODO:
 * Sander: twitter en facebook integreren + UI + tonen naam in UI
 * Sander: e2e op authenticatie
 
-TIP: Gebruik voor de API documentatie swagger.io
 
 
 
