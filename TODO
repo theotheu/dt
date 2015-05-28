@@ -1,7 +1,19 @@
 TODO:
 
-* User administration, CRUD operations + user interface --> Emiel
-* Sessions & cookies/tokens --> Marco
-* Business Rules, CRUD Operations --> Michiel, Tim
-* History van deployments in database --> Joost
-* OAuth2 --> Sander
+* ALLEN: uitzoeken dat alleen de webhook werkt op de development branch en niet op andere branches
+* Joost: opslaan van deployment tests CRUD afmaken in nieuwe controller + UI (in angular)
+* Joost: unit + e2e voor deployments
+* Marco: Integratie authenticatie met user database 
+* Marco, Emiel, Tim: Verbeteren bash script pullingAndTesting.sh
+* Emiel: parameteriseren fetchDatabase.sh
+* Emiel: unit + e2e users 
+* Michiel, Tim: CRUD op op validation rules + UI
+* Michiel, Tim: unit + e2e op business rules
+* Sander: twitter en facebook integreren + UI + tonen naam in UI
+* Sander: e2e op authenticatie
+
+TIP: Gebruik voor de API documentatie swagger.io
+
+
+
+
