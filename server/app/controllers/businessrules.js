@@ -1,4 +1,5 @@
-/*jslint node: true */
+/*jslint node: true, nomen : true */
+/* global exports, __filename*/
 "use strict";
 
 var mongoose = require('mongoose'),
@@ -101,9 +102,12 @@ exports.updateOne = function (req, res) {
     var conditions =
         {_id: req.params._id},
         update = {
-            title: req.body.doc.title || '',
-            author: req.body.doc.author || '',
-            description: req.body.doc.description || ''
+            name: req.body.doc.name || '',
+            model: req.body.doc.model || '',
+            property: req.body.doc.property || '',
+            equation: req.body.doc.equation || '',
+            expectedValue: req.body.doc.expectedValue || '',
+            modificationDate : Date.now
         },
         options = {multi: false},
         callback = function (err, doc) {
