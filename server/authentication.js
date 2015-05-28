@@ -18,7 +18,8 @@
         var configAuth = require('./config/oauth.config')[env];
 
         passport.use('google',
-            new GoogleStrategy({
+            new GoogleStrategy(
+                {
                     clientID: configAuth.googleAuth.clientID,
                     clientSecret: configAuth.googleAuth.clientSecret,
                     callbackURL: configAuth.googleAuth.callbackURL
@@ -35,7 +36,8 @@
 
         passport.deserializeUser(controller.deserializeUser);
 
-        app.post(
+        app
+            .post(
                 '/login',
                 passport.authenticate('login'),
                 controller.loggedIn

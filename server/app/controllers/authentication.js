@@ -13,9 +13,9 @@
         return done(null, profile);
     };
 
-    exports.loggedIn = function(req, res    ) {
+    exports.loggedIn = function (req, res) {
         res.redirect('/');
-    }
+    };
 
     exports.serializeUser = function (user, done) {
         done(null, user);
@@ -38,7 +38,8 @@
     };
 
     exports.example = function (req, res) {
-        res.json({
+        res.json(
+            {
                 message: 'welcome to our api!',
                 user: req.user
             }
