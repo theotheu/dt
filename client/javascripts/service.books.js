@@ -33,8 +33,22 @@
             function ($resource) {
                 var actions = {
                         'login': {method: 'POST'}
+                    };
+                return $resource('/login', {}, actions);
+            }])
+        .factory('businessRulesService', ['$resource', '$http',
+
+            function ($resource) {
+                var actions = {
+                        'get': {method: 'GET'},
+                        'save': {method: 'POST'},
+                        'query': {method: 'GET', isArray: true},
+                        'update': {method: 'PUT'},
+                        'delete': {method: 'DELETE'}
                     },
-                    service = $resource('/login', {}, actions);
-                return service;
+                    db = {};
+                // REST url to server
+                db.businessRules = $resource('/api/businessRules/:_id', {}, actions);
+                return db;
             }]);
 }());

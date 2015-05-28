@@ -1,56 +1,51 @@
-/*jslint node: true */
+/*jslint node: true, nomen : true */
 /*globals myApp */
-
-
 /**
+ *
  * @param $scope
- * @param usersService
+ * @param businessRulesService
  * @constructor
  */
-function UserListCtrl($scope, usersService) {
+function BusinessRuleListCtrl($scope, businessRulesService) {
     "use strict";
-    // GET all users
-    $scope.users = usersService.users.get();
+    $scope.businessRule = businessRulesService.businessRules.get();
 }
-
 /**
+ *
  * @param $scope
  * @param $routeParams
  * @param $location
- * @param usersService
+ * @param businessRulesService
  * @constructor
  */
-function UserDetailCtrl($scope, $routeParams, $location, usersService) {
+function BusinessRuleDetailCtrl($scope, $routeParams, $location, businessRulesService) {
     "use strict";
-    // GET 1 user
+    // GET 1 rule
 
     if ($routeParams._id !== 'new') {
-        $scope.users = usersService.users.get({_id: $routeParams._id}, function () {
+        $scope.businessRule = businessRulesService.businessRules.get({_id: $routeParams._id}, function () {
             console.log('$scope.requests ', $scope.requests);
         });
     }
 
-    // DELETE user
+    // DELETE rule
     $scope.delete = function () {
-        usersService.users.delete({_id: $routeParams._id});
-        $location.path("/users");
+        businessRulesService.businessRules.delete({_id: $routeParams._id});
+        $location.path("/businessRules");
     };
 
-    // CREATE, UPDATE user
+    // CREATE, UPDATE rule
     $scope.save = function () {
-        // $scope.checkPassword();
-
-        if ($scope.users.doc && $scope.users.doc._id !== undefined) {
+        if ($scope.businessRule.doc && $scope.businessRule.doc._id !== undefined) {
             console.log('Entering update');
-            usersService.users.update({_id: $scope.users.doc._id}, $scope.users, function (res) {
+            businessRulesService.businessRules.update({_id: $scope.businessRule.doc._id}, $scope.businessRule, function (res) {
                 console.log(res);
             });
         } else {
             console.log('Entering save');
-            usersService.users.save({}, $scope.users.doc, function (res) {
+            businessRulesService.businessRules.save({}, $scope.businessRule.doc, function (res) {
                 console.log(res);
             });
         }
     };
-
 }

@@ -8,7 +8,7 @@
  * @see https://github.com/angular/angular.js/wiki/Writing-AngularJS-Documentation
  * @see http://docs.angularjs.org/guide/concepts
  */
-var myApp = angular.module('myApp', ['myApp.services', 'ngRoute'])
+var myApp = angular.module('myApp', ['myApp.books', 'myApp.users', 'ngRoute'])
     .config(['$routeProvider', '$httpProvider', function ($routeProvider, $httpProvider) {
         "use strict";
 
@@ -27,6 +27,7 @@ var myApp = angular.module('myApp', ['myApp.services', 'ngRoute'])
             controller: BookDetailCtrl
         });
 
+        /** Users **/
         // Get all users
         $routeProvider.when('/users', {
             templateUrl: 'partials/user-list.html',
@@ -45,13 +46,7 @@ var myApp = angular.module('myApp', ['myApp.services', 'ngRoute'])
             controller: LoginCtrl
         });
 
-        // When no valid route is provided
-        $routeProvider.otherwise({
-            redirectTo: "/books"
-        });
-
         /** BUSINESS RULE PAGES**/
-
         // Get all business rules
         $routeProvider.when('/businessrules', {
             templateUrl: 'partials/businessRules-list.html',
@@ -62,5 +57,11 @@ var myApp = angular.module('myApp', ['myApp.services', 'ngRoute'])
         $routeProvider.when('/businessrules/:_id', {
             templateUrl: 'partials/businessRules-detail.html',
             controller: BusinessRuleDetailCtrl
+        });
+
+        /** Otherwise **/
+            // When no valid route is provided
+        $routeProvider.otherwise({
+            redirectTo: "/books"
         });
     }]);
