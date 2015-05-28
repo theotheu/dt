@@ -9,7 +9,10 @@
      */
     var fs = require('fs'),                             // Used to read files from the filesystem (__dirname)
         express = require('express'),                   // Fast, unopinionated, minimalist web framework for Node.js
+        passport = require('passport'),
+        util = require('util'),
         bodyParser = require("body-parser"),            // This does not handle multipart bodies, due to their complex and typically large nature. For multipart bodies, you may be interested in the following modules:
+        session = require('express-session'),
         env,
         config,
         mongoose,
@@ -79,7 +82,7 @@
         });
     }
 
-    require(__dirname + '/authentication.js')(app);
+    require(__dirname + '/authentication.js')(app, env);
 
     /**
      * Bootstrap routes

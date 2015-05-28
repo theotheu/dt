@@ -2,11 +2,15 @@
 (function () {
     "use strict";
 
-    exports.login = function (username, password, done) {
+    exports.sessionLogin = function (username, password, done) {
         if (username === "test" && password === "test") {
             return done(null, {id: 1});
         }
         return done(null, false);
+    };
+
+    exports.googleLogin = function (accessToken, refreshToken, profile, done) {
+        return done(null, profile);
     };
 
     exports.loggedIn = function(req, res    ) {
@@ -26,6 +30,19 @@
             return next();
         }
         res.sendStatus(401);
+    };
+
+    exports.logout = function (req, res) {
+        req.logout();
+        res.redirect('/');
+    };
+
+    exports.example = function (req, res) {
+        res.json({
+                message: 'welcome to our api!',
+                user: req.user
+            }
+        );
     };
 }());
 

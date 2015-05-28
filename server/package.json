@@ -12,6 +12,7 @@
     "mongoose": "^4.0.0",
     "passport" : "~0.1.17",
     "passport-local" : "~0.1.6",
-    "express-session": "^1.11.2"
+    "express-session": "^1.11.2",
+    "passport-google-oauth": ">= 0.0.0"
   }
 }
