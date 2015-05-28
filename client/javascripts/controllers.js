@@ -54,6 +54,15 @@ function BookDetailCtrl($scope, $routeParams, $location, booksService) {
     };
 }
 
+function LoginCtrl($scope, $location, loginService) {
+    "use strict";
+
+    $scope.login = function () {
+        loginService.login({}, $scope.user);
+        $location.path("/");
+    };
+}
+
 myApp.controller('myCtrl', function ($scope) {
     "use strict";
     // TODO: bind settings with whoami

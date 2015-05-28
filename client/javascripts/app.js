@@ -1,4 +1,4 @@
-/*global angular, BookListCtrl, BookDetailCtrl */
+/*global angular, BookListCtrl, BookDetailCtrl, LoginCtrl */
 
 
 /**
@@ -9,8 +9,11 @@
  * @see http://docs.angularjs.org/guide/concepts
  */
 var myApp = angular.module('myApp', ['myApp.services', 'ngRoute'])
-    .config(['$routeProvider', function ($routeProvider) {
+    .config(['$routeProvider', '$httpProvider', function ($routeProvider, $httpProvider) {
         "use strict";
+
+        // Interceptor checking for 401
+        $httpProvider.interceptors.push('authenticationInterceptor');
 
         // Get all books
         $routeProvider.when('/books', {
@@ -22,6 +25,12 @@ var myApp = angular.module('myApp', ['myApp.services', 'ngRoute'])
         $routeProvider.when('/books/:_id', {
             templateUrl: 'partials/book-detail.html',
             controller: BookDetailCtrl
+        });
+
+        // Login Form
+        $routeProvider.when('/login', {
+            templateUrl: 'partials/login.html',
+            controller: LoginCtrl
         });
 
         // When no valid route is provided

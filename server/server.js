@@ -79,6 +79,8 @@
         });
     }
 
+    require(__dirname + '/authentication.js')(app);
+
     /**
      * Bootstrap routes
      * @type {string}
