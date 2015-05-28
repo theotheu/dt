@@ -8,22 +8,22 @@ var router = express.Router();
 
 var controller = require('../app/controllers/businessRules.js');
 
-/** CREATE route for businessrules */
+/** CREATE route for businessRules */
 router
-    .post('/businessrules', controller.create);
+    .post('/businessRules', controller.create);
 
 // RETRIEVE
 router
-    .get('/businessrules', controller.list)
-    .get('/businessrules/:_id', controller.detail);
+    .get('/businessRules', controller.list)
+    .get('/businessRules/:_id', controller.detail);
 
 // UPDATE
 router
-    .put('/businessrules/:_id', controller.updateOne);
+    .put('/businessRules/:_id', controller.updateOne);
 
 // DELETE
 router
-    .delete('/businessrules/:_id', controller.deleteOne);
+    .delete('/businessRules/:_id', controller.deleteOne);
 
 
 module.exports = router;

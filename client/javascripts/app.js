@@ -48,13 +48,13 @@ var myApp = angular.module('myApp', ['myApp.books', 'myApp.users', 'ngRoute'])
 
         /** BUSINESS RULE PAGES**/
         // Get all business rules
-        $routeProvider.when('/businessrules', {
+        $routeProvider.when('/businessRules', {
             templateUrl: 'partials/businessRules-list.html',
             controller: BusinessRuleListCtrl
         });
 
         // Get 1 book
-        $routeProvider.when('/businessrules/:_id', {
+        $routeProvider.when('/businessRules/:_id', {
             templateUrl: 'partials/businessRules-detail.html',
             controller: BusinessRuleDetailCtrl
         });
