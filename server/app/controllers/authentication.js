@@ -9,18 +9,21 @@
         return done(null, false);
     };
 
+    exports.loggedIn = function(req, res    ) {
+        res.redirect('/');
+    }
+
     exports.serializeUser = function (user, done) {
-        console.log(user);
-        done(null, user.id);
+        done(null, user);
     };
 
-    exports.deserializeUser = function (id, done) {
-        done(null, {id: 1});
+    exports.deserializeUser = function (user, done) {
+        done(null, user);
     };
 
     exports.isAuthenticated = function (req, res, next) {
         if (req.isAuthenticated()) {
-            next();
+            return next();
         }
         res.sendStatus(401);
     };

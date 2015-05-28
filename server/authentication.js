@@ -25,7 +25,8 @@
 
         app.post(
             '/login',
-            passport.authenticate('login')
+            passport.authenticate('login'),
+            controller.loggedIn
         );
 
         app.all('/api/*', controller.isAuthenticated);
