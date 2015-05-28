@@ -18,6 +18,7 @@ function BookListCtrl($scope, booksService) {
  * TODO: create controller for retrieving 1 book, create and delete
  * @param $scope
  * @param $routeParams
+ * @param $location
  * @param booksService
  * @constructor
  */
