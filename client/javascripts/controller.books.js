@@ -18,6 +18,7 @@ function BookListCtrl($scope, booksService) {
  * TODO: create controller for retrieving 1 book, create and delete
  * @param $scope
  * @param $routeParams
+ * @param $location
  * @param booksService
  * @constructor
  */
@@ -51,6 +52,15 @@ function BookDetailCtrl($scope, $routeParams, $location, booksService) {
                 console.log(res);
             });
         }
+    };
+}
+
+function LoginCtrl($scope, $location, loginService) {
+    "use strict";
+
+    $scope.login = function () {
+        loginService.login({}, $scope.user);
+        $location.path("/");
     };
 }
 

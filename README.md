@@ -59,6 +59,17 @@ module.exports = {
 }
 ```
 
+OAuth2
+------
+
+##Google
+Configure Google API
+![OAuth2.google](https://raw.githubusercontent.com/theotheu/books/assets/docs/assets/OAuth2.google.png)
+
+You also have to enable Google Plus
+![GooglePlus](https://raw.githubusercontent.com/theotheu/books/assets/docs/assets/GooglePlus.png)
+
+
 Install node modules
 ----------
 The archive is without the node modules.
