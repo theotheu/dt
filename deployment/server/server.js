@@ -1,133 +1,164 @@
 /*jslint node:true*/
 
-"use strict";
+(function () {
+    "use strict";
 
-var express = require('express'),
-    fs = require('fs'),
-    bodyParser = require('body-parser'),
-    bodyParser = require('body-parser'),
-    mongoose = require('mongoose'),
-    sys = require('sys'),
-    exec = require('child_process').exec,
-    app = express(),
-    child,
-    config = require('../../server/config/config.js')['deployment'],
-    testConfig = require('../../server/config/config.js')['test'],
-    acceptanceConfig = require('../../server/config/config.js')['acceptance']
-    ;
+    var express = require('express'),
+        fs = require('fs'),
+        bodyParser = require('body-parser'),
+        mongoose,
+        sys = require('sys'),
+        exec = require('child_process').exec,
+        app = express(),
+        child,
+        env,
+        models_path,
+        model_files,
+        routes_path,
+        route_files,
+        config,
+        testConfig = require('../../server/config/config.js')['test'],
+        acceptanceConfig = require('../../server/config/config.js')['acceptance'],
+        deploymentConfig = require('../../server/config/config.js')['deployment']
+        ;
 
 // Configure body-parser
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));     // Notice because option default will flip in next major; http://goo.gl/bXjyyz
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({extended: true}));     // Notice because option default will flip in next major; http://goo.gl/bXjyyz
 
-app.post('/webhook', function (req, res) {
-    var reqBody;
+    env = process.env.NODE_ENV || 'deployment';
+    config = require('../../server/config/config.js')[env];
 
-    var cb = function (error, stdout, stderr) {
-        sys.print('stdout: ' + stdout);
-        sys.print('stderr: ' + stderr);
-        if (error !== null) {
-            console.log('exec error: ' + error);
-        }
+    mongoose = require('mongoose');
+    mongoose.connect(deploymentConfig.db);
 
-        var nodemailer = require('nodemailer');
+    models_path = __dirname + '/app/models';
+    model_files = fs.readdirSync(models_path);
+    model_files.forEach(function (file) {
+        require(models_path + '/' + file);
+    });
 
-        // create reusable transporter object using SMTP transport
-        var transporter = nodemailer.createTransport({
-            service: 'Gmail',
-            auth: {
-                user: config.user,
-                pass: config.password
+    app.set('port', deploymentConfig);
+
+    routes_path = __dirname + '/routes';
+    route_files = fs.readdirSync(routes_path);
+    route_files.forEach(function (file) {
+        var route = require(routes_path + '/' + file);                  // Get the route
+        app.use('/api', route);
+    });
+
+    app.use(express.static(__dirname + '/../client/'));
+
+    app.post('/webhook', function (req, res) {
+        var reqBody;
+
+        var cb = function (error, stdout, stderr) {
+            sys.print('stdout: ' + stdout);
+            sys.print('stderr: ' + stderr);
+            if (error !== null) {
+                console.log('exec error: ' + error);
             }
-        });
 
-        var subject = "Test results";
-        if (error === "" || error === null) {
-            subject += " ✔";
-        } else if (stdout.match(/Other process is running. Aborting now/i) !== null) {
-            subject += " †";
-        } else {
-            subject += " ✘";
-        }
+            var nodemailer = require('nodemailer');
 
-
-        // NB! No need to recreate the transporter object. You can use
-        // the same transporter object for all e-mails
-        // setup e-mail data with unicode symbols
-        var mailOptions = {
-            from: config.userName + " <" + config.user + ">", // sender address
-            to: config.to, // list of receivers
-            subject: subject, // Subject line
-            text: '<b>stdout</b><br>' + stdout + "<br><b>stderr</b><br>" + stderr + "<br><span style='color:red'><b>error</b><br>" + error, // plaintext body 'Hello world ✔'
-            html: '<pre><b>stdout</b><br>' + stdout + "<br><br><b>stderr</b><br>" + stderr + "<br><br><span style='color:red'><b>error</b><br></span>" + error + "<br><br><b>server log: req.body</b><br>" + reqBody + "</pre>",// html body
-            attachments: [
-                {
-                    filename: "unit-tests-results.log",
-                    path: "../../tests/unit-tests/unit-tests-results.log"
-                },
-                {
-                    filename: "static-analyzer-results.log",
-                    path: "../../tests/static-analyzer/static-analyzer-results.log"
-                },
-                {
-                    filename: "end-to-end-results.log",
-                    path: "../../tests/e2e/end-to-end-results.log"
-                },
-                {
-                    filename: "pullingAndTesting.sh.log",
-                    path: "pullingAndTesting.sh.log"
+            // create reusable transporter object using SMTP transport
+            var transporter = nodemailer.createTransport({
+                service: 'Gmail',
+                auth: {
+                    user: config.user,
+                    pass: config.password
                 }
-            ]
-        };
+            });
 
-        // send mail with defined transport object
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log(error);
+            var subject = "Test results";
+            if (error === "" || error === null) {
+                subject += " ✔";
+            } else if (stdout.match(/Other process is running. Aborting now/i) !== null) {
+                subject += " †";
             } else {
-                console.log('Message sent: ' + info.response);
+                subject += " ✘";
             }
-        });
 
-        var Test = require('./app/models/tests');
 
-        var staticAnalyzerLog = "";
-        if (fs.existsSync("../../tests/static-analyzer/error_log.txt")) {
-            staticAnalyzerLog = fs.readFileSync("../../tests/static-analyzer/error_log.txt").toString();
-        } else {
-            staticAnalyzerLog = fs.readFileSync("../../tests/static-analyzer/static-analyzer-results.log");
+            // NB! No need to recreate the transporter object. You can use
+            // the same transporter object for all e-mails
+            // setup e-mail data with unicode symbols
+            var mailOptions = {
+                from: config.userName + " <" + config.user + ">", // sender address
+                to: config.to, // list of receivers
+                subject: subject, // Subject line
+                text: '<b>stdout</b><br>' + stdout + "<br><b>stderr</b><br>" + stderr + "<br><span style='color:red'><b>error</b><br>" + error, // plaintext body 'Hello world ✔'
+                html: '<pre><b>stdout</b><br>' + stdout + "<br><br><b>stderr</b><br>" + stderr + "<br><br><span style='color:red'><b>error</b><br></span>" + error + "<br><br><b>server log: req.body</b><br>" + reqBody + "</pre>",// html body
+                attachments: [
+                    {
+                        filename: "unit-tests-results.log",
+                        path: "../../tests/unit-tests/unit-tests-results.log"
+                    },
+                    {
+                        filename: "static-analyzer-results.log",
+                        path: "../../tests/static-analyzer/static-analyzer-results.log"
+                    },
+                    {
+                        filename: "end-to-end-results.log",
+                        path: "../../tests/e2e/end-to-end-results.log"
+                    },
+                    {
+                        filename: "pullingAndTesting.sh.log",
+                        path: "pullingAndTesting.sh.log"
+                    }
+                ]
+            };
+
+            // send mail with defined transport object
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Message sent: ' + info.response);
+                }
+            });
+
+            var Test = require('./app/models/tests');
+
+            var staticAnalyzerLog = "";
+            if (fs.existsSync("../../tests/static-analyzer/error_log.txt")) {
+                staticAnalyzerLog = fs.readFileSync("../../tests/static-analyzer/error_log.txt").toString();
+            } else {
+                staticAnalyzerLog = fs.readFileSync("../../tests/static-analyzer/static-analyzer-results.log");
+            }
+            ;
+
+            var test = new Test({
+                deploymentId: "Deployment " + Date.now(),
+                bashLog: fs.readFileSync("./pullingAndTesting.sh.log"),
+                staticTestLog: staticAnalyzerLog,
+                unitTestLog: fs.readFileSync("../../tests/unit-tests/unit-tests-results.json").toString(),
+                e2eTestLog: fs.readFileSync("../../tests/e2e/e2e_result_log.json").toString()
+            });
+
+            test.save(function (err) {
+            });
+
         };
 
-        var test = new Test({
-            deploymentId: "Deployment " + Date.now(),
-            webLog: {},
-            bashLog: fs.readFileSync("./pullingAndTesting.sh.log"),
-            staticTestLog: staticAnalyzerLog,
-            unitTestLog: fs.readFileSync("../../tests/unit-tests/unit-tests-results.json").toString(),
-            e2eTestLog: fs.readFileSync("../../tests/e2e/e2e_result_log.json").toString()
-        });
+        if (req.body.repository.url === config.repoUrl) {
+            console.log('>>>>>req', req.body, '<<<<<<');
+            reqBody = JSON.stringify(req.body);
+            console.log('Now do a git pull for the current branch');
+            child = exec("./pullingAndTesting.sh -t " + testConfig.port + " -a " + acceptanceConfig.port, cb);
 
-        test.save(function (err) {
-        });
+            console.log(child);
 
-    };
+        }
+        res.send({});
+    });
 
-    if (req.body.repository.url === config.repoUrl) {
-        console.log('>>>>>req', req.body, '<<<<<<');
-        reqBody = JSON.stringify(req.body);
-        console.log('Now do a git pull for the current branch');
-        child = exec("./pullingAndTesting.sh -t " + testConfig.port + " -a " + acceptanceConfig.port, cb);
+    app.all('*', function (req, res) {
+        res.sendStatus(404);
+    });
 
-        console.log(child);
+    app.listen(deploymentConfig.port);
 
-    }
-    res.send({});
-});
+    module.exports = app;
 
-app.all('*', function (req, res) {
-    console.log('>>>>> 404 error\n', req, '\n 404 error <<<<<');
-    res.send(404, {msg: 'Nothing here. This is the webhook for github'});
-});
-
-app.listen(config.port);
-
+}());

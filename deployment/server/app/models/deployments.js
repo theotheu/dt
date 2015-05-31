@@ -6,22 +6,22 @@
      * Module dependencies.
      */
     var mongoose = require('mongoose'),
-        schemaName,
-        db;
+        Schema = mongoose.Schema,
+        deploymentSchema;
 
-    db = mongoose.connect('mongodb://server3.tezzt.nl/S513753-his');
 
-    schemaName = new mongoose.Schema({
+    deploymentSchema = new Schema({
             deploymentId: {type: String, required: true, unique: true},
-            webLog: {type: String},
             bashLog: {type: String},
             staticTestLog: {type: String},
             unitTestLog: {type: String},
             e2eTestLog: {type: String},
             modificationDate: {type: Date, "default": Date.now}
         },
-        {collection: 'tests'});
+        {collection: 'deployments'});
 
-    module.exports = db.model('Test', schemaName);
+    var Deployment = mongoose.model('Deployment', deploymentSchema);
+
+    module.exports = Deployment;
 
 }());

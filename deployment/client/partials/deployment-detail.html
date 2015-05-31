@@ -1,2 +1,31 @@
 <h2>Deployment Detail</h2>
 
+<div class="deployment">
+    Database ID: {{deployments.doc._id}}
+    Deployment ID: {{deployments.doc.deploymentId}}
+    Timestamp: {{deployments.doc.modificationDate}}
+</div>
+
+<h2>Static Analyzer test log</h2>
+
+<div class="deployment">
+    {{deployments.doc.staticTestLog}}
+</div>
+
+<h2>Unit test log</h2>
+
+<div class="deployment">
+    {{deployments.doc.unitTestLog}}
+</div>
+
+<h2>End 2 end test log</h2>
+
+<div class="deployment">
+    {{deployments.doc.e2eTestLog}}
+</div>
+
+<h2>Bash log</h2>
+
+<div class="deployment">
+    {{deployments.doc.bashLog}}
+</div>
