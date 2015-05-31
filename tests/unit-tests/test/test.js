@@ -456,7 +456,7 @@ describe('API Routing for CRUD operations on deployments', function () {
     describe('RETRIEVE 1 deployment', function () {
         it('Should GET /deployments/{id}', function (done) {
             request
-                .get('/deployments/' + tmpBookId)
+                .get('/deployments/' + tmpDeploymentId)
                 .expect('Content-Type', /application.json/)
                 .expect(200)
                 .end(function (err, res) {
@@ -480,7 +480,7 @@ describe('API Routing for CRUD operations on deployments', function () {
     describe('DELETE 1 deployment', function () {
         it('Should DELETE /deployments/{id}', function (done) {
             request
-                .del('/deployments/' + tmpBookId)
+                .del('/deployments/' + tmpDeploymentId)
                 .expect(200)                                                // supertest
                 .expect('Content-Type', /application.json/)                 // supertest
                 .expect('Content-Type', 'utf-8')                            // supertest
