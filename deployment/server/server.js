@@ -30,7 +30,7 @@
     config = require('../../server/config/config.js')[env];
 
     mongoose = require('mongoose');
-    mongoose.connect(deploymentConfig.db);
+    mongoose.connect(config.db);
 
     models_path = __dirname + '/app/models';
     model_files = fs.readdirSync(models_path);
@@ -158,6 +158,9 @@
     });
 
     app.listen(deploymentConfig.port);
+
+    console.log(env);
+    console.log(config.db);
 
     module.exports = app;
 

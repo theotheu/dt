@@ -1,7 +1,8 @@
 // Load configuration
 var env = process.env.NODE_ENV || 'development';
 var config = require('../../server/config/config.js')[env],
-    localConfig = require('./../config-test.json');
+    localConfig = require('./../config-test.json'),
+    deploymentConfig = require('../../server/config/config.js')['deployment']
 
 console.log('>>>>>', env, '<<<<<');
 
@@ -202,7 +203,61 @@ describe('CRUD on book', function () {
         expect(books.count()).toBe(10);
 
     });
+});
 
+describe('Deployment test homepage', function () {
 
+    beforeEach(function () {
+        browser.get('http://' + localConfig.host + ':' + deploymentConfig.port);
+    });
+
+    it('should get the titles', function () {
+
+        expect(browser.getTitle()).toBe('Deployment History');
+        expect(element(by.tagName('h1')).getText()).toBe('Deployment History');
+        expect(element(by.tagName('h2')).getText()).toBe('Deployment List');
+
+        // Get CSS value
+        element(by.tagName('h1')).getCssValue('color')
+            .then(function (v) {
+                expect(v).toBe('rgba(0, 0, 0, 1)');
+            });
+
+    });
+
+    it('should count the number of deployments', function () {
+
+        var deployments = element.all(by.repeater('deployment in deployments'));
+
+        expect(deployments.count()).toBe(5);
+
+    });
+
+    it('should get the first deployment', function () {
+
+        var deployments = element.all(by.repeater('deployment in deployments'));
+
+        expect(deployments.get(0).getText()).toEqual('CRIA DT Deployment 1433069611784');
+
+    });
+
+    it('should get the last deployment', function () {
+
+        var deployments = element.all(by.repeater('deployment in deployments'));
+
+        expect(deployments.last().getText()).toEqual('CRIA DT Deployment 1432993302347');
+
+    });
+
+    it('should filter the deployments and return 1 deployment', function () {
+
+        element(by.model('query')).sendKeys('1433069611784');
+
+        var deployments = element.all(by.repeater('deployment in deployments'));
+
+        expect(deployments.count()).toBe(1);
+        expect(deployments.get(0).getText()).toEqual('CRIA DT Deployment 1433069611784');
+
+    });
 });
 
