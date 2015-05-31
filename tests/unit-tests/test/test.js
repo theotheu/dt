@@ -376,3 +376,156 @@ describe('API Routing for CRUD operations on users', function () {
     });
 
 });
+
+describe('API Routing for CRUD operations on deployments', function () {
+
+    var deploymentPort = require('../../../server/config/config.js')['deployment']
+    var request = supertest(localConfig.host + ":" + deploymentPort + "/" + localConfig.api_path);
+
+    var tmpDeploymentId = null;
+    var tmpDeploymentResponse;
+
+    before(function (done) {
+        done();
+    });
+
+    describe('CREATE deployment', function () {
+        it('Should POST /deployments', function (done) {
+            request
+                .post('/deployments')
+                .send({
+                    "deploymentId": "CRIA DT Deployment " + Date.now(),
+                    "bashLog": "Testing bash log",
+                    "staticTestLog": "Testing static test log",
+                    "unitTestLog": "Testing unit test log",
+                    "e2eTestLog": "Testing end 2 end test log"
+                }
+            )
+                .expect(200)                                                // supertest
+                .expect('Content-Type', /application.json/)                 // supertest
+                .expect('Content-Type', 'utf-8')                            // supertest
+                .end(function (err, res) {
+                    if (err) {
+                        throw err;
+                    }
+                    JSON.parse(res.text)
+                        .should.have.property('meta')
+                        .and.have.property('action').be.exactly('create');
+                    JSON.parse(res.text)
+                        .should.have.property('err').be.exactly(null);
+                    res.statusCode.should.be.exactly(200);
+                    res.type.should.be.exactly('application/json');
+                    res.charset.should.be.exactly('utf-8');
+                    JSON.parse(res.text)
+                        .should.have.property('doc')
+                        .and.have.property('bashLog')
+                        .be.exactly('Testing bash log');
+
+                    tmpDeploymentId = JSON.parse(res.text).doc._id;
+
+                    done();
+                });
+        });
+    });
+
+    describe('RETRIEVE all deployments', function () {
+
+        it('Should GET /deployments', function (done) {
+            request
+                .get('/deployments')
+                .expect(200)                                                // supertest
+                .expect('Content-Type', /application.json/)                 // supertest
+                .expect('Content-Type', 'utf-8')                            // supertest
+                .end(function (err, res) {
+                    if (err) {
+                        throw err;
+                    }
+
+                    JSON.parse(res.text)
+                        .should.have.property('meta')
+                        .and.have.property('action').be.exactly('list');
+                    res.statusCode.should.be.exactly(200);
+
+                    tmpDeploymentResponse = res.text;
+
+                    done();
+                });
+        });
+    });
+
+    describe('RETRIEVE 1 deployment', function () {
+        it('Should GET /deployments/{id}', function (done) {
+            request
+                .get('/deployments/' + tmpBookId)
+                .expect('Content-Type', /application.json/)
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) {
+                        throw err;
+                    }
+                    JSON.parse(res.text)
+                        .should.have.property('meta')
+                        .and.have.property('action')
+                        .be.exactly('detail');
+                    JSON.parse(res.text)
+                        .should.have.property('doc')
+                        .and.have.property('bashLog')
+                        .be.exactly('Testing bash log');
+                    res.statusCode.should.be.exactly(200);
+                    done();
+                });
+        });
+    });
+
+    describe('DELETE 1 deployment', function () {
+        it('Should DELETE /deployments/{id}', function (done) {
+            request
+                .del('/deployments/' + tmpBookId)
+                .expect(200)                                                // supertest
+                .expect('Content-Type', /application.json/)                 // supertest
+                .expect('Content-Type', 'utf-8')                            // supertest
+                .end(function (err, res) {
+                    if (err) {
+                        throw err;
+                    }
+                    JSON.parse(res.text)
+                        .should.have.property('meta')
+                        .and.have.property('action').be.exactly('delete');
+                    JSON.parse(res.text)
+                        .should.have.property('doc')
+                        .and.have.property('ok')
+                        .be.exactly(1);
+                    JSON.parse(res.text)
+                        .should.have.property('doc')
+                        .and.have.property('n')
+                        .be.exactly(1);
+                    JSON.parse(res.text).should.have.property('err').be.exactly(null);
+                    res.statusCode.should.be.exactly(200);
+                    done();
+                });
+        });
+    });
+
+    describe('RETRIEVE all deployments to verify that the original collection is restored.', function () {
+        it('Should GET /deployments', function (done) {
+            request
+                .get('/deployments')
+                .expect(200)                                                // supertest
+                .expect('Content-Type', /application.json/)                 // supertest
+                .expect('Content-Type', 'utf-8')                            // supertest
+                .end(function (err, res) {
+                    if (err) {
+                        throw err;
+                    }
+
+                    JSON.parse(res.text)
+                        .should.have.property('meta')
+                        .and.have.property('action').be.exactly('list');
+                    res.statusCode.should.be.exactly(200);
+
+                    done();
+                });
+        });
+    });
+
+});
