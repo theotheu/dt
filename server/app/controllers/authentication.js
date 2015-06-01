@@ -13,6 +13,14 @@
         return done(null, profile);
     };
 
+    exports.twitterLogin = function (token, tokenSecret, profile, done) {
+        return done(null, profile);
+    };
+
+    exports.facebookLogin = function (accessToken, refreshToken, profile, done) {
+        return done(null, profile);
+    };
+
     exports.loggedIn = function (req, res) {
         res.redirect('/');
     };
