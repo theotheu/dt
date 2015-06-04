@@ -59,8 +59,9 @@ function LoginCtrl($scope, $location, loginService) {
     "use strict";
 
     $scope.login = function () {
-        loginService.login({}, $scope.user);
-        $location.path("/");
+        loginService.login({}, $scope.user, function(res) {
+            $location.path("/");
+        });
     };
 }
 

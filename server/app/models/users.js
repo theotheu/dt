@@ -6,6 +6,7 @@
      * Module dependencies.
      */
     var mongoose = require('mongoose'),
+        bcrypt   = require('bcrypt'),
         Schema = mongoose.Schema,
         schemaName,
         modelName;
@@ -24,6 +25,10 @@
         modificationDate: {type: Date, "default": Date.now}
     },
         {collection: 'users'});
+
+    schemaName.methods.validPassword = function(password) {
+        return bcrypt.compareSync(password, this.password);
+    };
 
     /**
      * @class Model/User
