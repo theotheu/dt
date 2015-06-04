@@ -61,15 +61,16 @@
         passport.deserializeUser(controller.deserializeUser);
 
         app
-            .post('/login', passport.authenticate('login'), controller.loggedIn)
+            .post('/login', passport.authenticate('login',{failureRedirect: '/'}), controller.loggedIn)
             .get('/auth/twitter', passport.authenticate('twitter'))
             .get('/auth/twitter/callback', passport.authenticate('twitter', {successRedirect: '/', failureRedirect: '/'}))
             .get('/auth/facebook', passport.authenticate('facebook'))
             .get('/auth/facebook/callback', passport.authenticate('facebook', {successRedirect: '/', failureRedirect: '/'}))
             .get('/auth/google', passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login']}))
             .get('/auth/google/callback', passport.authenticate('google', {successRedirect: '/', failureRedirect: '/'}))
-            .get('/logout', controller.logout)
             .get('/auth/example', controller.isAuthenticated, controller.example)
+            .get('/auth/status', controller.status)
+            .get('/logout', controller.logout)
             .all('/api/*', controller.isAuthenticated);
     };
 }());

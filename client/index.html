@@ -6,18 +6,22 @@
 <body>
 
 <h1>Book demo</h1>
-
-<a id="homeLink" href="/#/">Home</a> | <a id="newLink" href="/#/books/new">New</a><br>
-<a id="usersLink" href="/#/users">Users</a> | <a id="usersNewLink" href="/#/users/new">New user</a>
-| <a id="logoutLink" href="/logout">Logout</a>
-<br />
-<a id="businessRulesViewLink" href="/#/businessrules">businessRules</a> |
-<a id="businessRulesNewLink" href="/#/businessrules/new">New</a>
-
+<div id="settingsCtrl" ng-controller="settingsCtrl">
+    <div ng-show="status.isAuthenticated==true">
+        <a id="homeLink" href="/#/">Home</a> |
+        <a id="newLink" href="/#/books/new">New</a>
+        <br>
+        <a id="usersLink" href="/#/users">Users</a> |
+        <a id="usersNewLink" href="/#/users/new">New user</a>
+        <br />
+        <a id="businessRulesViewLink" href="/#/businessrules">businessRules</a> |
+        <a id="businessRulesNewLink" href="/#/businessrules/new">New</a>
+        <br/>
+        Welkom, {{status.name}} | <a id="logoutLink" href="/logout">Logout</a>
+    </div>
+</div>
 <div data-ng-view=""></div>
-
 <hr>
-<div id="myCtrl" data-ng-controller="myCtrl as settings">{{whoami}}</div>
 
 <!-- Lib -->
 <script src="./javascripts/lib/angular.min.js"></script>

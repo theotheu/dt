@@ -32,7 +32,8 @@
 
             function ($resource) {
                 var actions = {
-                        'login': {method: 'POST'}
+                        'login': {method: 'POST'},
+                        'status': {method: 'GET', url: 'auth/status'}
                     };
                 return $resource('/login', {}, actions);
             }])
