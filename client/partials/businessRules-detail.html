@@ -1,0 +1,24 @@
+<h2>Business Rule</h2>
+
+
+<form name="businessRuleForm">
+
+    <p>Id: <input type="text" data-ng-model="businessRule.doc._id" readonly title="id"></p>
+
+    <p>Name: <input type="text" data-ng-model="businessRule.doc.name" title="name"></p>
+
+    <p>Model: <input type="text" data-ng-model="businessRule.doc.model" title="model"></p>
+
+    <p>Property: <input type="text" data-ng-model="businessRule.doc.property" title="property"></p>
+
+    <p>Equation: <input type="text" data-ng-model="businessRule.doc.equation" title="equation"></p>
+
+    <p>ExpectedValue: <input type="text" data-ng-model="businessRule.doc.expectedValue" title="expectedValue"></p>
+
+    <button type="button" data-ng-click="delete()" id="deleteBtn">Delete</button>
+
+    <button type="button" data-ng-click="save()" id="saveBtn">Save
+    </button>
+
+
+</form>

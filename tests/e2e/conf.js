@@ -1,6 +1,9 @@
 // conf.js
 // @see https://github.com/angular/protractor/blob/master/referenceConf.js
 //
+
+var JSONReporter = require('jasmine-json-test-reporter');
+
 exports.config = {
     // The address of a running selenium server. If specified, Protractor will
     // connect to an already running instance of selenium. This usually looks like
@@ -30,5 +33,13 @@ exports.config = {
         showColors: true,
         isVerbose: true,
         includeStackTrace: true
+    },
+    framework: 'jasmine2',
+    onPrepare: function () {
+        jasmine.getEnv().addReporter(new JSONReporter({
+            file: 'e2e_result_log.json',
+            beautify: true,
+            indentationLevel: 4 // used if beautify === true
+        }));
     }
 };
