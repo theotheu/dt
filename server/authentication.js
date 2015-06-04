@@ -12,10 +12,6 @@
         controller = require('./app/controllers/authentication.js');
 
     module.exports = function (app, env) {
-<<<<<<< HEAD
-
-=======
->>>>>>> sander
         app.use(session({secret: 'sessionsecret'}));
         app.use(passport.initialize());
         app.use(passport.session());
