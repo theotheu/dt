@@ -6,7 +6,7 @@
      * Module dependencies.
      */
     var mongoose = require('mongoose'),
-        bcrypt   = require('bcrypt'),
+        bcrypt = require('bcrypt'),
         Schema = mongoose.Schema,
         schemaName,
         modelName;
@@ -19,14 +19,16 @@
      * @see http://mongoosejs.com/docs/schematypes.html
      * @see http://mongoosejs.com/docs/guide.html#collection
      */
-    schemaName = new Schema({
-        email: {type: String, required: true, unique: true},
-        password: {type: String, required: true},
-        modificationDate: {type: Date, "default": Date.now}
-    },
-        {collection: 'users'});
+    schemaName = new Schema(
+        {
+            email: {type: String, required: true, unique: true},
+            password: {type: String, required: true},
+            modificationDate: {type: Date, "default": Date.now}
+        },
+        {collection: 'users'}
+    );
 
-    schemaName.methods.validPassword = function(password) {
+    schemaName.methods.validPassword = function (password) {
         return bcrypt.compareSync(password, this.password);
     };
 

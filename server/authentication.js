@@ -38,10 +38,10 @@
 
         app
             .post(
-            '/login',
-            passport.authenticate('login'),
-            controller.loggedIn
-        )
+                '/login',
+                passport.authenticate('login'),
+                controller.loggedIn
+            )
             .get('/auth/google', passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login']}))
             .get('/auth/google/callback', passport.authenticate('google', {successRedirect: '/', failureRedirect: '/'}))
             .get('/logout', controller.logout)

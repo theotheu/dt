@@ -17,9 +17,7 @@
                 console.log(user);
                 return done(null, {id: 1});
             }
-            else {
-                return done(null, false);
-            }
+            return done(null, false);
         });
     };
 
