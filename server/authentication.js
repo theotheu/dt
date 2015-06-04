@@ -27,7 +27,8 @@
                     callbackURL: configAuth.googleAuth ? configAuth.googleAuth.callbackURL : "-"
                 },
                 controller.googleLogin
-            ));
+            )
+        );
 
         passport.use(
             'twitter',
@@ -38,7 +39,8 @@
                     callbackURL: configAuth.twitterAuth ? configAuth.twitterAuth.callbackURL : "-"
                 },
                 controller.twitterLogin
-            ));
+            )
+        );
 
         passport.use(
             'facebook',
@@ -49,7 +51,8 @@
                     callbackURL: configAuth.facebookAuth ? configAuth.facebookAuth.callbackURL : "-"
                 },
                 controller.facebookLogin
-            ));
+            )
+        );
 
         passport.use(
             'login',
@@ -61,7 +64,7 @@
         passport.deserializeUser(controller.deserializeUser);
 
         app
-            .post('/login', passport.authenticate('login',{failureRedirect: '/'}), controller.loggedIn)
+            .post('/login', passport.authenticate('login', {failureRedirect: '/'}), controller.loggedIn)
             .get('/auth/twitter', passport.authenticate('twitter'))
             .get('/auth/twitter/callback', passport.authenticate('twitter', {successRedirect: '/', failureRedirect: '/'}))
             .get('/auth/facebook', passport.authenticate('facebook'))
