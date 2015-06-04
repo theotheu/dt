@@ -3,7 +3,7 @@
 
 var mongoose = require('mongoose'),
     User = mongoose.model('User'),
-    bcrypt = require('bcrypt');
+    bcrypt = require('bcryptjs');
 
 /**
  * CREATE a user
