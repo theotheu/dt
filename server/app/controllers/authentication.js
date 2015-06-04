@@ -14,7 +14,6 @@
             }
             if (doc && doc.validPassword(password)) {
                 user = {name: doc.email, provider: 'local'};
-                console.log(user);
                 return done(null, {id: 1});
             }
             return done(null, false);
