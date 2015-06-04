@@ -53,6 +53,7 @@
         var reqBody;
 
         var cb = function (error, stdout, stderr) {
+
             sys.print('stdout: ' + stdout);
             sys.print('stderr: ' + stderr);
             if (error !== null) {
@@ -118,7 +119,7 @@
                 }
             });
 
-            var Test = require('./app/models/tests');
+            var Deployment = require('./app/models/deployments');
 
             var staticAnalyzerLog = "";
             if (fs.existsSync("../../tests/static-analyzer/error_log.txt")) {
@@ -128,7 +129,8 @@
             }
             ;
 
-            var test = new Test({
+            console.log('we zijn hier');
+            var deployment = new Deployment({
                 deploymentId: "Deployment " + Date.now(),
                 bashLog: fs.readFileSync("./pullingAndTesting.sh.log"),
                 staticTestLog: staticAnalyzerLog,
@@ -136,17 +138,17 @@
                 e2eTestLog: fs.readFileSync("../../tests/e2e/e2e_result_log.json").toString()
             });
 
-            test.save(function (err) {
+            deployment.save(function (err) {
             });
 
         };
 
         if (req.body.repository.url === config.repoUrl) {
-            console.log('>>>>>req', req.body, '<<<<<<');
+            // console.log('>>>>>req', req.body, '<<<<<<');
             reqBody = JSON.stringify(req.body);
             console.log('Now do a git pull for the current branch');
-            child = exec("./pullingAndTesting.sh -t " + testConfig.port + " -a " + acceptanceConfig.port, cb);
-
+            // child = exec("./pullingAndTesting.sh -t " + testConfig.port + " -a " + acceptanceConfig.port, cb);
+            cb(null, null, null);
             console.log(child);
 
         }
