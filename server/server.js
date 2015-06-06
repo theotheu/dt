@@ -92,6 +92,8 @@
         app.use('/api', route);
     });
 
+    app.use('/help', express.static(__dirname + '/../help/swagger.yaml'));
+
     /**
      * Middleware to serve static page
      */

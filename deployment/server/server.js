@@ -119,7 +119,7 @@
             var staticAnalyzerLog = "";
             if (fs.existsSync("../../tests/static-analyzer/error_log.txt")) {
                 staticAnalyzerLog = fs.readFileSync("../../tests/static-analyzer/error_log.txt").toString();
-            } else if(fs.existsSync("../../tests/static-analyzer/static-analyzer-results.log")){
+            } else if (fs.existsSync("../../tests/static-analyzer/static-analyzer-results.log")) {
                 staticAnalyzerLog = fs.readFileSync("../../tests/static-analyzer/static-analyzer-results.log");
             } else {
                 staticAnalyzerLog = {result: "no log file found"};
@@ -140,17 +140,16 @@
 
         };
 
-        if (req.body.repository.url === config.repoUrl) {
-            // console.log('>>>>>req', req.body, '<<<<<<');
+
+        if (req.body.repository.url === config.repoUrl && req.body.ref === config.repoRef) {
+            console.log('>>>>>req', req.body, '<<<<<<');
             reqBody = JSON.stringify(req.body);
             console.log('Now do a git pull for the current branch');
-            // child = exec("./pullingAndTesting.sh -t " + testConfig.port + " -a " + acceptanceConfig.port, cb);
-            cb(null, null, null);
-            console.log(child);
+            child = exec("./pullingAndTesting.sh -t " + testConfig.port + " -a " + acceptanceConfig.port, cb);
 
         }
         res.send({});
-    });
+    })
 
     app.all('*', function (req, res) {
         res.sendStatus(404);
