@@ -47,6 +47,14 @@
     app.post('/webhook', function (req, res) {
         var reqBody;
 
+        var fileExists = function(file){
+            if (fs.existsSync(file)){
+                return fs.readFileSync(file)
+            } else {
+                return "Hello world";//{result: "no log file found"};
+            }
+        };
+
         var cb = function (error, stdout, stderr) {
 
             sys.print('stdout: ' + stdout);
@@ -116,37 +124,24 @@
 
             var Deployment = require('./app/models/deployments');
 
-            var staticAnalyzerLog = "";
-            if (fs.existsSync("../../tests/static-analyzer/error_log.txt")) {
-                staticAnalyzerLog = fs.readFileSync("../../tests/static-analyzer/error_log.txt").toString();
-            } else if (fs.existsSync("../../tests/static-analyzer/static-analyzer-results.log")) {
-                staticAnalyzerLog = fs.readFileSync("../../tests/static-analyzer/static-analyzer-results.log");
-            } else {
-                staticAnalyzerLog = {result: "no log file found"};
-            }
-
-
-            console.log('we zijn hier');
             var deployment = new Deployment({
                 deploymentId: "Deployment " + Date.now(),
-                bashLog: {}, // fs.readFileSync("./pullingAndTesting.sh.log"),
-                staticTestLog: staticAnalyzerLog,
-                unitTestLog: {},  // fs.readFileSync("../../tests/unit-tests/unit-tests-results.json").toString(),
-                e2eTestLog: {}  // fs.readFileSync("../../tests/e2e/e2e_result_log.json").toString()
+                bashLog: fileExists("./pullingAndTesting.sh.log").toString(),
+                staticTestLog: fileExists("../../tests/static-analyzer/error_log.txt"),
+                unitTestLog: fileExists("../../tests/unit-tests/unit-tests-results.json"),
+                e2eTestLog: fileExists("../../tests/e2e/e2e_result_log.json")
             });
 
             deployment.save(function (err) {
             });
-
         };
-
 
         if (req.body.repository.url === config.repoUrl && req.body.ref === config.repoRef) {
             console.log('>>>>>req', req.body, '<<<<<<');
             reqBody = JSON.stringify(req.body);
             console.log('Now do a git pull for the current branch');
-            child = exec("./pullingAndTesting.sh -t " + testConfig.port + " -a " + acceptanceConfig.port, cb);
-
+            //child = exec("./pullingAndTesting.sh -t " + testConfig.port + " -a " + acceptanceConfig.port, cb);
+            cb(null, null, null);
         }
         res.send({});
     })

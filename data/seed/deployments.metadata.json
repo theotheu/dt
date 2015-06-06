@@ -1,1 +1,0 @@
-{"indexes":[{"v":1,"name":"_id_","key":{"_id":1},"ns":"S513753-tst.deployments"},{"v":1,"name":"deploymentId_1","key":{"deploymentId":1},"unique":true,"ns":"S513753-tst.deployments","background":true,"safe":null}]}
