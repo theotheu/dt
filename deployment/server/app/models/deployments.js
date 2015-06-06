@@ -12,10 +12,11 @@
 
     deploymentSchema = new Schema({
             deploymentId: {type: String, required: true, unique: true},
+            deploymentResult: {type: String},
             bashLog: {type: String},
-            staticTestLog: {type: String},
-            unitTestLog: {type: String},
-            e2eTestLog: {type: String},
+            staticTestLog: {type: Object},
+            unitTestLog: {type: Object},
+            e2eTestLog: {type: Object},
             modificationDate: {type: Date, "default": Date.now}
         },
         {collection: 'deployments'});

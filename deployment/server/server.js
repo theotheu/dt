@@ -49,10 +49,14 @@
 
         var fileExists = function(file){
             if (fs.existsSync(file)){
-                return fs.readFileSync(file)
+                return fs.readFileSync(file).toString();
             } else {
-                return "Hello world";//{result: "no log file found"};
+                return '{"result": "no log file found"}';
             }
+        };
+
+        var deploymentSucceeded = function(execError){
+            return execError === "" || execError === null;
         };
 
         var cb = function (error, stdout, stderr) {
@@ -75,7 +79,7 @@
             });
 
             var subject = "Test results";
-            if (error === "" || error === null) {
+            if (deploymentSucceeded(error)) {
                 subject += " ✔";
             } else if (stdout.match(/Other process is running. Aborting now/i) !== null) {
                 subject += " †";
@@ -126,10 +130,11 @@
 
             var deployment = new Deployment({
                 deploymentId: "Deployment " + Date.now(),
-                bashLog: fileExists("./pullingAndTesting.sh.log").toString(),
-                staticTestLog: fileExists("../../tests/static-analyzer/error_log.txt"),
-                unitTestLog: fileExists("../../tests/unit-tests/unit-tests-results.json"),
-                e2eTestLog: fileExists("../../tests/e2e/e2e_result_log.json")
+                deploymentResult: deploymentSucceeded(error) ? "Succeeded" : "Failed",
+                bashLog: fileExists("./pullingAndTesting.sh.log"),
+                staticTestLog: JSON.parse(fileExists("../../tests/static-analyzer/error_log.txt")),
+                unitTestLog: JSON.parse(fileExists("../../tests/unit-tests/unit-tests-results.json")),
+                e2eTestLog: JSON.parse(fileExists("../../tests/e2e/e2e_result_log.json"))
             });
 
             deployment.save(function (err) {
