@@ -206,3 +206,143 @@ describe('CRUD on book', function () {
 
 });
 
+
+describe('CRUD on user', function () {
+
+    var _id;
+
+    beforeEach(function () {
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/users/new');
+    });
+
+    it('should get the titles', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/users/new');
+
+        expect(browser.getTitle()).toBe('Book demo');
+        expect(element(by.tagName('h1')).getText()).toBe('Book demo');
+        expect(element(by.tagName('h2')).getText()).toBe('User');
+
+        // Get CSS value
+        element(by.tagName('h1')).getCssValue('color')
+            .then(function (v) {
+                expect(v).toBe('rgba(0, 0, 0, 1)');
+            });
+
+    });
+
+    /**
+     * @see https://docs.angularjs.org/api/ng/directive/form
+     */
+    it('should display an empty user form', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/users/new');
+
+        expect(element(by.model('users.doc._id')).getText()).toBe('');
+        expect(element(by.model('users.doc.email')).getText()).toBe('');
+        expect(element(by.model('users.doc.password')).getText()).toBe('');
+
+    });
+
+    it('should create a user', function () {
+
+        /**
+         * First we create the new user
+         */
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/users/new');
+
+        element(by.model('users.doc.email')).sendKeys('test1234@test.nl');
+        element(by.model('users.doc.password')).sendKeys('test1234');
+
+        element(by.id('saveBtn')).click();
+
+    });
+
+    it('should query the new created user', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/users');
+
+        element(by.model('query')).sendKeys('test1234@test.nl');
+
+        var users = element.all(by.repeater('user in users'));
+
+        expect(users.count()).toBe(1);
+        expect(users.get(0).getText()).toEqual('test1234@test.nl');
+
+    });
+
+    it('should update the new created user', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/users');
+
+        // Find the user
+        element(by.model('query')).sendKeys('test1234@test.nl');
+
+        expect(element.all(by.repeater('user in users'))
+            .first().getText())
+            .toBe('test1234@test.nl');
+
+
+        // Click on list item (note the nested selector)
+        element.all(by.repeater('user in users')).first().$('a').click();
+
+        // Retrieve id for later retrieval
+        // Issue with retrieving value from input field, @see https://github.com/angular/protractor/issues/140
+        element(by.model('users.doc._id')).getAttribute('value')
+            .then(function (v) {
+                _id = v;
+
+                // Set new values
+                element(by.model('users.doc.email')).clear();
+                element(by.model('users.doc.email')).sendKeys('test5678@test.nl');
+
+                element(by.model('users.doc.password')).clear();
+                element(by.model('users.doc.password')).sendKeys('test5678');
+
+                // Save new values
+                element(by.id('saveBtn')).click();
+
+                // Verify new values
+                browser.get('http://' + localConfig.host + ':' + config.port + '/#/users');
+
+                // Find the user
+                element(by.model('query')).sendKeys(_id);
+
+                expect(element.all(by.repeater('user in users'))
+                    .first().getText())
+                    .toBe('test5678@test.nl');
+
+                // browser.pause();
+
+            });
+
+    });
+
+    it('should delete the new created user', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/users');
+
+        // Find the user
+        element(by.model('query')).sendKeys(_id);
+
+        expect(element.all(by.repeater('user in users'))
+            .first().getText())
+            .toBe('test5678@test.nl');
+
+        // Click on list item (note the nested selector)
+        element.all(by.repeater('user in users')).first().$('a').click();
+
+        // Delete user
+        element(by.id('deleteBtn')).click();
+
+        // Verify that the number of users is 7
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/users');
+
+        var users = element.all(by.repeater('user in users'));
+
+        expect(users.count()).toBe(7);
+
+    });
+
+
+});
