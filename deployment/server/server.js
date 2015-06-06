@@ -11,23 +11,18 @@
         exec = require('child_process').exec,
         app = express(),
         child,
-        env,
         models_path,
         model_files,
         routes_path,
         route_files,
-        config,
         testConfig = require('../../server/config/config.js')['test'],
         acceptanceConfig = require('../../server/config/config.js')['acceptance'],
-        deploymentConfig = require('../../server/config/config.js')['deployment']
+        config = require('../../server/config/config.js')['deployment']
         ;
 
 // Configure body-parser
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({extended: true}));     // Notice because option default will flip in next major; http://goo.gl/bXjyyz
-
-    env = process.env.NODE_ENV || 'deployment';
-    config = require('../../server/config/config.js')[env];
 
     mongoose = require('mongoose');
     mongoose.connect(config.db);
@@ -38,7 +33,7 @@
         require(models_path + '/' + file);
     });
 
-    app.set('port', deploymentConfig);
+    app.set('port', config.port);
 
     routes_path = __dirname + '/routes';
     route_files = fs.readdirSync(routes_path);
@@ -124,18 +119,20 @@
             var staticAnalyzerLog = "";
             if (fs.existsSync("../../tests/static-analyzer/error_log.txt")) {
                 staticAnalyzerLog = fs.readFileSync("../../tests/static-analyzer/error_log.txt").toString();
-            } else {
+            } else if(fs.existsSync("../../tests/static-analyzer/static-analyzer-results.log")){
                 staticAnalyzerLog = fs.readFileSync("../../tests/static-analyzer/static-analyzer-results.log");
+            } else {
+                staticAnalyzerLog = {result: "no log file found"};
             }
-            ;
+
 
             console.log('we zijn hier');
             var deployment = new Deployment({
                 deploymentId: "Deployment " + Date.now(),
-                bashLog: fs.readFileSync("./pullingAndTesting.sh.log"),
+                bashLog: {}, // fs.readFileSync("./pullingAndTesting.sh.log"),
                 staticTestLog: staticAnalyzerLog,
-                unitTestLog: fs.readFileSync("../../tests/unit-tests/unit-tests-results.json").toString(),
-                e2eTestLog: fs.readFileSync("../../tests/e2e/e2e_result_log.json").toString()
+                unitTestLog: {},  // fs.readFileSync("../../tests/unit-tests/unit-tests-results.json").toString(),
+                e2eTestLog: {}  // fs.readFileSync("../../tests/e2e/e2e_result_log.json").toString()
             });
 
             deployment.save(function (err) {
@@ -159,10 +156,7 @@
         res.sendStatus(404);
     });
 
-    app.listen(deploymentConfig.port);
-
-    console.log(env);
-    console.log(config.db);
+    app.listen(config.port);
 
     module.exports = app;
 
