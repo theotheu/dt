@@ -36,21 +36,17 @@ paths:
           description: this help file
   /users:
     get:
-      response:
+      responses:
         200:
-          description: list of all users
-    get:
-      response:
-        200:
-          description: returns a user based in ID
+          description: list of all users or fetch one user
       parameters:
         - name: id
           in: path
           description: ID of user to get
-          required: true
           type: string
+          required: false
     post:
-      response:
+      responses:
         200:
           description: adds a new user
       parameters:
