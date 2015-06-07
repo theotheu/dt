@@ -135,4 +135,5 @@ config.js
 oauth.config.js
 
 pid
-tests/static-analyzer/error_log.txt
+*results.json
+*.jar
