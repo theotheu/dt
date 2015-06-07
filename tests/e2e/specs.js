@@ -255,7 +255,7 @@ describe('Deployment test homepage', function () {
         expect(element.all(by.tagName('th')).get(0).getText()).toBe('database ID');
         expect(element.all(by.tagName('h3')).get(0).getText()).toBe('Static Analyzer test log');
         expect(element.all(by.tagName('h3')).get(3).getText()).toBe('Bash log');
-        expect(element.all(by.tagName('label')).get(0).getText()).toBe('show resultss:');
+        expect(element.all(by.tagName('label')).get(0).getText()).toBe('show results:');
 
     });
 });
