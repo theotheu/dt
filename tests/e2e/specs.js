@@ -5,6 +5,47 @@ var config = require('../../server/config/config.js')[env],
 
 console.log('>>>>>', env, '<<<<<');
 
+describe('DT test login page', function () {
+
+    beforeEach(function () {
+        browser.get('http://' + localConfig.host + ':' + config.port);
+    });
+
+    it('should get the titles', function () {
+
+        expect(browser.getTitle()).toBe('Book demo');
+        expect(element(by.tagName('h1')).getText()).toBe('Book demo');
+        expect(element(by.tagName('h2')).getText()).toBe('Login');
+
+        // Get CSS value
+        element(by.tagName('h1')).getCssValue('color')
+            .then(function (v) {
+                expect(v).toBe('rgba(0, 0, 0, 1)');
+            });
+    });
+
+    /**
+     * @see https://docs.angularjs.org/api/ng/directive/form
+     */
+    it('should display an empty login form', function () {
+        expect(element(by.model('user.username')).getText()).toBe('');
+        expect(element(by.model('user.password')).getText()).toBe('');
+    });
+
+
+    it('should login the user', function () {
+        element(by.model('user.username')).sendKeys('emiel.roelofsen@gmail.com');
+        element(by.model('user.password')).sendKeys('test1234');
+
+        element(by.id('loginBtn')).click();
+
+        // When succesfull login, the books page should be able to show.
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/books');
+        expect(element(by.tagName('h2')).getText()).toBe('Books');
+    });
+});
+
+
 describe('Book test homepage', function () {
 
     beforeEach(function () {
