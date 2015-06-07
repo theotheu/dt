@@ -51,7 +51,7 @@
             if (fs.existsSync(file)){
                 return fs.readFileSync(file).toString();
             } else {
-                return '{"result": "no log file found"}';
+                return '{"noFile": {"noFileText": "Sorry, no log file found..."}}';
             }
         };
 
