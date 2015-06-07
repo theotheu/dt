@@ -1,7 +1,7 @@
 /*jslint node:true */
 
 (function () {
-    "use strict";
+     "use strict";
 
     /**
      * Module dependencies.

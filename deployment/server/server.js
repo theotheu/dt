@@ -108,15 +108,15 @@
                 attachments: [
                     {
                         filename: "unit-tests-results.log",
-                        path: "../../tests/unit-tests/unit-tests-results.log"
+                        path: "../../tests/unit-tests/unit-tests-results.json"
                     },
                     {
-                        filename: "static-analyzer-results.log",
-                        path: "../../tests/static-analyzer/static-analyzer-results.log"
+                        filename: "static-analyzer-error-results.log",
+                        path: "../../tests/static-analyzer/static-analyzer-error-results.json"
                     },
                     {
                         filename: "end-to-end-results.log",
-                        path: "../../tests/e2e/end-to-end-results.log"
+                        path: "../../tests/e2e/end-to-end-results.json"
                     },
                     {
                         filename: "pullingAndTesting.sh.log",
@@ -140,9 +140,9 @@
                 deploymentId: "Deployment " + Date.now(),
                 deploymentResult: deploymentSucceeded(error) ? "Succeeded" : "Failed",
                 bashLog: textFileExists("./pullingAndTesting.sh.log"),
-                staticTestLog: jsonFileExists("../../tests/static-analyzer/error_log.txt"),
+                staticTestLog: jsonFileExists("../../tests/static-analyzer/static-analyzer-error-results.json"),
                 unitTestLog: jsonFileExists("../../tests/unit-tests/unit-tests-results.json"),
-                e2eTestLog: jsonFileExists("../../tests/e2e/e2e_result_log.json")
+                e2eTestLog: jsonFileExists("../../tests/e2e/end-to-end-results.json")
             });
 
             deployment.save(function (err) {
