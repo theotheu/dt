@@ -115,6 +115,7 @@
         </div>
     </div>
 </span>
+<a href="" ng-click="staticChecked=false" ng-show="staticChecked">hide results</a>
 
 
 <h3>Unit test log</h3>
@@ -196,6 +197,7 @@
         </div>
     </div>
 </span>
+<a href="" ng-click="unitChecked=false" ng-show="unitChecked">hide results</a>
 
 
 <h3>End 2 end test log</h3>
@@ -241,13 +243,15 @@
         </div>
     </div>
 </span>
+<a href="" ng-click="e2eChecked=false" ng-show="e2eChecked">hide results</a>
 
 
 <h3>Bash log</h3>
 <label>show results: <input type="checkbox" ng-model="bashChecked" ng-init="checked=false"/></label>
-
 <span ng-if="bashChecked">
     <div class="textfield">
         {{deployments.doc.bashLog}}
     </div>
 </span>
+<br>
+<a href="" ng-click="bashChecked=false" ng-show="bashChecked">hide results</a>
