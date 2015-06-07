@@ -28,7 +28,7 @@
 <span ng-if="staticChecked">
 
     <div ng-show="deployments.doc.staticTestLog.noFile">
-        <h3>{{deployments.doc.staticTestLog.noFile.noFileText}}</h3>
+        <h4>{{deployments.doc.staticTestLog.noFile.noFileText}}</h4>
     </div>
 
     <div ng-hide="deployments.doc.staticTestLog.noFile">
@@ -123,7 +123,7 @@
 <span ng-if="unitChecked">
 
     <div ng-show="deployments.doc.unitTestLog.noFile">
-        <h3>{{deployments.doc.unitTestLog.noFile.noFileText}}</h3>
+        <h4>{{deployments.doc.unitTestLog.noFile.noFileText}}</h4>
     </div>
 
     <div ng-hide="deployments.doc.unitTestLog.noFile">
@@ -152,10 +152,6 @@
                     <td>{{pending.title}}</td>
                 </tr>
                 <tr>
-                    <th>Duration</th>
-                    <td>{{pending.duration}} ms</td>
-                </tr>
-                <tr>
                     <th>Error</th>
                     <td>{{pending.err}}</td>
                 </tr>
@@ -171,13 +167,9 @@
                     <th>Test</th>
                     <td>{{failure.title}}</td>
                 </tr>
-                <tr>
-                    <th>Duration</th>
-                    <td>{{failure.duration}} ms</td>
-                </tr>
-                <tr>
-                    <th>Error</th>
-                    <td>{{failure.err}}</td>
+                <tr ng-repeat="(key, value) in failure.err">
+                    <th>{{key}}</th>
+                    <td>{{value}}</td>
                 </tr>
             </table>
             <br>
@@ -212,7 +204,7 @@
 <span ng-if="e2eChecked">
 
     <div ng-show="deployments.doc.e2eTestLog.noFile">
-        <h3>{{deployments.doc.e2eTestLog.noFile.noFileText}}</h3>
+        <h4>{{deployments.doc.e2eTestLog.noFile.noFileText}}</h4>
     </div>
 
     <div ng-repeat="deployment in deployments.doc.e2eTestLog" ng-hide="deployments.doc.e2eTestLog.noFile">
@@ -253,6 +245,9 @@
 
 <h3>Bash log</h3>
 <label>show results: <input type="checkbox" ng-model="bashChecked" ng-init="checked=false"/></label>
-<div class="textfield" ng-if="bashChecked">
-    {{deployments.doc.bashLog}}
-</div>
+
+<span ng-if="bashChecked">
+    <div class="textfield">
+        {{deployments.doc.bashLog}}
+    </div>
+</span>

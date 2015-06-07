@@ -377,13 +377,13 @@ describe('API Routing for CRUD operations on users', function () {
 
 });
 
+
 describe('API Routing for CRUD operations on deployments', function () {
 
-    var deploymentPort = require('../../../server/config/config.js')['deployment']
+    var deploymentPort = require('../../../server/config/config.js')['deployment'].port;
     var request = supertest(localConfig.host + ":" + deploymentPort + "/" + localConfig.api_path);
 
     var tmpDeploymentId = null;
-    var tmpDeploymentResponse;
 
     before(function (done) {
         done();
@@ -394,11 +394,12 @@ describe('API Routing for CRUD operations on deployments', function () {
             request
                 .post('/deployments')
                 .send({
-                    "deploymentId": "CRIA DT Deployment " + Date.now(),
+                    "deploymentId": "CRIA DT Test Deployment " + Date.now(),
+                    "deploymentResult": "Deployment test",
                     "bashLog": "Testing bash log",
-                    "staticTestLog": "Testing static test log",
-                    "unitTestLog": "Testing unit test log",
-                    "e2eTestLog": "Testing end 2 end test log"
+                    "staticTestLog": '{"text": "Testing static test log"}',
+                    "unitTestLog": '{"text": "Testing unit test log"}',
+                    "e2eTestLog": '{"text": "Testing e2e test log"}'
                 }
             )
                 .expect(200)                                                // supertest
@@ -445,8 +446,6 @@ describe('API Routing for CRUD operations on deployments', function () {
                         .should.have.property('meta')
                         .and.have.property('action').be.exactly('list');
                     res.statusCode.should.be.exactly(200);
-
-                    tmpDeploymentResponse = res.text;
 
                     done();
                 });

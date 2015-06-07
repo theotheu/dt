@@ -47,11 +47,19 @@
     app.post('/webhook', function (req, res) {
         var reqBody;
 
-        var fileExists = function(file){
+        var jsonFileExists = function(file){
+            if (fs.existsSync(file)){
+                return JSON.parse(fs.readFileSync(file).toString());
+            } else {
+                return JSON.parse('{"noFile": {"noFileText": "Sorry, no log file found..."}}');
+            }
+        };
+
+        var textFileExists = function(file){
             if (fs.existsSync(file)){
                 return fs.readFileSync(file).toString();
             } else {
-                return '{"noFile": {"noFileText": "Sorry, no log file found..."}}';
+                return "Sorry, no log file found...";
             }
         };
 
@@ -131,10 +139,10 @@
             var deployment = new Deployment({
                 deploymentId: "Deployment " + Date.now(),
                 deploymentResult: deploymentSucceeded(error) ? "Succeeded" : "Failed",
-                bashLog: fileExists("./pullingAndTesting.sh.log"),
-                staticTestLog: JSON.parse(fileExists("../../tests/static-analyzer/error_log.txt")),
-                unitTestLog: JSON.parse(fileExists("../../tests/unit-tests/unit-tests-results.json")),
-                e2eTestLog: JSON.parse(fileExists("../../tests/e2e/e2e_result_log.json"))
+                bashLog: textFileExists("./pullingAndTesting.sh.log"),
+                staticTestLog: jsonFileExists("../../tests/static-analyzer/error_log.txt"),
+                unitTestLog: jsonFileExists("../../tests/unit-tests/unit-tests-results.json"),
+                e2eTestLog: jsonFileExists("../../tests/e2e/e2e_result_log.json")
             });
 
             deployment.save(function (err) {

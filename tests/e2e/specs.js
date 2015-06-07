@@ -225,11 +225,11 @@ describe('Deployment test homepage', function () {
 
     });
 
-    it('should count the number of deployments', function () {
+    it('should count at least one deployments in the list', function () {
 
         var deployments = element.all(by.repeater('deployment in deployments'));
 
-        expect(deployments.count()).toBe(5);
+        expect(deployments.count()).toBeGreaterThan(0);
 
     });
 
@@ -237,7 +237,7 @@ describe('Deployment test homepage', function () {
 
         var deployments = element.all(by.repeater('deployment in deployments'));
 
-        expect(deployments.get(0).getText()).toEqual('CRIA DT Deployment 1433069611784');
+        expect(deployments.get(0).getText()).toEqual('Deployment');
 
     });
 
