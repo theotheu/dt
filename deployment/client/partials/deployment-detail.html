@@ -1,40 +1,212 @@
 <h2>Deployment Detail</h2>
 
-<div class="deployment">
+<div>
     <table>
         <tr>
-            <th>Database ID</th>
+            <th>database ID</th>
             <td>{{deployments.doc._id}}</td>
         </tr>
         <tr>
-            <th>Deployment ID</th>
+            <th>deployment ID</th>
             <td>{{deployments.doc.deploymentId}}</td>
         </tr>
         <tr>
-            <th>Timestamp</th>
+            <th>timestamp</th>
             <td>{{deployments.doc.modificationDate}}</td>
         </tr>
         <tr>
-            <th>Deployment result</th>
+            <th>deployment result</th>
             <td>{{deployments.doc.deploymentResult}}</td>
         </tr>
     </table>
 </div>
 
-<h2>Static Analyzer test log</h2>
+
+<h3>Static Analyzer test log</h3>
 <label>show results: <input type="checkbox" ng-model="staticChecked" ng-init="checked=false"/></label>
-<div ng-repeat="deployment in deployments.doc.staticTestLog" ng-if="staticChecked">
-    <h3 ng-show="deployment.noFileText">{{deployment.noFileText}}</h3>
-</div>
 
-<h2>Unit test log</h2>
+<span ng-if="staticChecked">
+
+    <div ng-show="deployments.doc.staticTestLog.noFile">
+        <h3>{{deployments.doc.staticTestLog.noFile.noFileText}}</h3>
+    </div>
+
+    <div ng-hide="deployments.doc.staticTestLog.noFile">
+
+        <h4>STATISTICS</h4>
+        <table>
+            <tr>
+                <th>error count</th>
+                <td>{{deployments.doc.staticTestLog.totalErrors}}</td>
+            </tr>
+            <tr>
+                <th>file count</th>
+                <td>{{deployments.doc.staticTestLog.totalFiles}}</td>
+            </tr>
+            <tr>
+                <th>line count jslint</th>
+                <td>{{deployments.doc.staticTestLog.lineCounts.jslint}}</td>
+            </tr>
+            <tr>
+                <th>line count jshint</th>
+                <td>{{deployments.doc.staticTestLog.lineCounts.jshint}}</td>
+            </tr>
+            <tr>
+                <th>line count esprima</th>
+                <td>{{deployments.doc.staticTestLog.lineCounts.esprima}}</td>
+            </tr>
+        </table>
+
+        <h4>JSLINT ERRORS ({{deployments.doc.staticTestLog.jslint.length}})</h4>
+        <div ng-repeat="jslinterror in deployments.doc.staticTestLog.jslint">
+            <table>
+                <tr>
+                    <th>error</th>
+                    <td>{{jslinterror.reason}}</td>
+                </tr>
+                <tr>
+                    <th>file</th>
+                    <td>{{jslinterror.file}}</td>
+                </tr>
+                <tr>
+                    <th>location</th>
+                    <td>line {{jslinterror.line}} character {{jslinterror.character}}</td>
+                </tr>
+            </table>
+            <br>
+        </div>
+
+        <h4>JSHINT ERRORS ({{deployments.doc.staticTestLog.jshint.length}})</h4>
+        <div ng-repeat="jshinterror in deployments.doc.staticTestLog.jshint">
+            <table>
+                <tr>
+                    <th>error</th>
+                    <td>{{jshinterror.reason}}</td>
+                </tr>
+                <tr>
+                    <th>file</th>
+                    <td>{{jshinterror.file}}</td>
+                </tr>
+                <tr>
+                    <th>location</th>
+                    <td>line {{jshinterror.line}} character {{jshinterror.character}}</td>
+                </tr>
+            </table>
+            <br>
+        </div>
+
+        <h4>ESPRIMA ERRORS ({{deployments.doc.staticTestLog.esprima.length}})</h4>
+        <div ng-repeat="esprimaerror in deployments.doc.staticTestLog.esprima">
+            <table>
+                <tr>
+                    <th>error</th>
+                    <td>{{esprimaerror.reason}}</td>
+                </tr>
+                <tr>
+                    <th>file</th>
+                    <td>{{esprimaerror.file}}</td>
+                </tr>
+                <tr>
+                    <th>location</th>
+                    <td>line {{esprimaerror.line}} character {{esprimaerror.character}}</td>
+                </tr>
+            </table>
+            <br>
+        </div>
+    </div>
+</span>
+
+
+<h3>Unit test log</h3>
 <label>show results: <input type="checkbox" ng-model="unitChecked" ng-init="checked=false"/></label>
-<div ng-repeat="deployment in deployments.doc.unitTestLog" ng-if="unitChecked">
-    <h3 ng-show="deployment.noFileText">{{deployment.noFileText}}</h3>
-</div>
+
+<span ng-if="unitChecked">
+
+    <div ng-show="deployments.doc.unitTestLog.noFile">
+        <h3>{{deployments.doc.unitTestLog.noFile.noFileText}}</h3>
+    </div>
+
+    <div ng-hide="deployments.doc.unitTestLog.noFile">
+
+        <h4>STATISTICS</h4>
+        <table>
+            <tr data-ng-repeat="(key, value) in deployments.doc.unitTestLog.stats">
+                <th>{{key}}</th>
+                <td>{{value}}</td>
+            </tr>
+        </table>
+
+        <h4>TESTS ({{deployments.doc.unitTestLog.tests.length}})</h4>
+
+        <div ng-repeat="test in deployments.doc.unitTestLog.tests">
+            <h4>{{test.title}}</h4>
+            --> {{test.fullTitle}}
+        </div>
+
+        <h4>PENDING ({{deployments.doc.unitTestLog.pending.length}})</h4>
+
+        <div ng-repeat="pending in deployments.doc.unitTestLog.pending">
+            <table>
+                <tr>
+                    <th>Test</th>
+                    <td>{{pending.title}}</td>
+                </tr>
+                <tr>
+                    <th>Duration</th>
+                    <td>{{pending.duration}} ms</td>
+                </tr>
+                <tr>
+                    <th>Error</th>
+                    <td>{{pending.err}}</td>
+                </tr>
+            </table>
+            <br>
+        </div>
+
+        <h4>FAILURES ({{deployments.doc.unitTestLog.failures.length}})</h4>
+
+        <div ng-repeat="failure in deployments.doc.unitTestLog.failures">
+            <table>
+                <tr>
+                    <th>Test</th>
+                    <td>{{failure.title}}</td>
+                </tr>
+                <tr>
+                    <th>Duration</th>
+                    <td>{{failure.duration}} ms</td>
+                </tr>
+                <tr>
+                    <th>Error</th>
+                    <td>{{failure.err}}</td>
+                </tr>
+            </table>
+            <br>
+        </div>
+
+        <h4>PASSES ({{deployments.doc.unitTestLog.passes.length}})</h4>
+
+        <div ng-repeat="pass in deployments.doc.unitTestLog.passes">
+            <table>
+                <tr>
+                    <th>Test</th>
+                    <td>{{pass.title}}</td>
+                </tr>
+                <tr>
+                    <th>Duration</th>
+                    <td>{{pass.duration}} ms</td>
+                </tr>
+                <tr>
+                    <th>Error</th>
+                    <td>{{pass.err}}</td>
+                </tr>
+            </table>
+            <br>
+        </div>
+    </div>
+</span>
 
 
-<h2>End 2 end test log</h2>
+<h3>End 2 end test log</h3>
 <label>show results: <input type="checkbox" ng-model="e2eChecked" ng-init="checked=false"/></label>
 
 <span ng-if="e2eChecked">
@@ -44,7 +216,7 @@
     </div>
 
     <div ng-repeat="deployment in deployments.doc.e2eTestLog" ng-hide="deployments.doc.e2eTestLog.noFile">
-        <h3>{{deployment.id}} --> {{deployment.description}} </h3>
+        <h4>{{deployment.id}} --> {{deployment.description}} </h4>
 
         <div ng-repeat="spec in deployment.specs">
             <h4>{{spec.id}} - {{spec.fullName}}</h4>
@@ -79,7 +251,7 @@
 </span>
 
 
-<h2>Bash log</h2>
+<h3>Bash log</h3>
 <label>show results: <input type="checkbox" ng-model="bashChecked" ng-init="checked=false"/></label>
 <div class="textfield" ng-if="bashChecked">
     {{deployments.doc.bashLog}}
