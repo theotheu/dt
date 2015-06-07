@@ -39,6 +39,16 @@ paths:
       response:
         200:
           description: list of all users
+    get:
+      response:
+        200:
+          description: returns a user based in ID
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to get
+          required: true
+          type: string
     post:
       response:
         200:
