@@ -43,8 +43,27 @@ describe('DT test login page', function () {
         browser.get('http://' + localConfig.host + ':' + config.port + '/#/books');
         expect(element(by.tagName('h2')).getText()).toBe('Books');
     });
-});
 
+    it('should logout the user', function () {
+        element(by.id('logoutLink')).click();
+
+        // When successfull logout, the books page should not be able to show.
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/books');
+        expect(element(by.tagName('h2')).getText()).not.toBe('Books');
+    });
+
+    // Make sure to login the user again so the other tests can run as well.
+    it('should login the user again', function () {
+        element(by.model('user.username')).sendKeys('emiel.roelofsen@gmail.com');
+        element(by.model('user.password')).sendKeys('test1234');
+
+        element(by.id('loginBtn')).click();
+
+        // When succesfull login, the books page should be able to show.
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/books');
+        expect(element(by.tagName('h2')).getText()).toBe('Books');
+    });
+});
 
 describe('Book test homepage', function () {
 
