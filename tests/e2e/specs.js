@@ -234,14 +234,6 @@ describe('Deployment test homepage', function () {
 
     });
 
-    it('should get the first deployment', function () {
-
-        var deployments = element.all(by.repeater('deployment in deployments'));
-
-        expect(deployments.get(0).getText()).toEqual('CRIA DT Test Deployment, 2015-01-01T12:00:00.000Z');
-
-    });
-
     it('should filter the deployments and return 1 deployment', function () {
 
         element(by.model('query')).sendKeys('55743f9012025ec3513e2658');
