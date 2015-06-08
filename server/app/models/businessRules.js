@@ -27,32 +27,17 @@
         },
         {collection: 'businessRules'}
     );
-    //TODO: Validation
+
+    //TODO: Validation of model and property. Needs check on database to see if model and property exist.
     schemaName.path('model').validate(function (val) {
-        //TODO: Model needs to exist
-        return true;
-        //return (val !== undefined && val !== null && val.length >= 8);
-    }, 'ValidateModel');
-
-    schemaName.path('property').validate(function (val) {
-        //TODO: Property must exist in model
-        return true;
-    }, 'ValidateProperty');
-
-    //TODO: Merge these 2 validations
-    /**
-     * http://stackoverflow.com/questions/7369326/validating-multiple-mongoose-schema-properties
-     *  if (v === this.password) {
+        if ('model' === 'model') {
+            if ('property' === 'property') {
+                return true;
+            }
+            return false;
+        }
         return false;
-    } else {
-        return true;
-    }
-     */
-
-    schemaName.path('equation').validate(function (val) {
-        //TODO: equation must be a valid defined equasion
-        return true;
-    }, 'ValidateEquation');
+    }, 'ValidateModel');
 
     modelName = "BusinessRule";
     mongoose.model(modelName, schemaName);

@@ -98,7 +98,6 @@ exports.detail = function (req, res) {
  * @param res http response
  */
 exports.updateOne = function (req, res) {
-//TODO: Fix this.
     var conditions =
         {_id: req.params._id},
         update = {
