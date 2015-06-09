@@ -40,9 +40,9 @@ Run `brew install jmeter`
 http://jmeter.apache.org/download_jmeter.cgi
 
 ## Adjust jmeter config.js
-Copy ```config.js.default``` to ```config.js```.
+Copy ```jmeter.conf.default``` to ```jmeter.conf```.
 
-Adjust settings
+Adjust configuration
 
 ## Run the tests
 Run `npm test`
