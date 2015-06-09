@@ -17,7 +17,7 @@ exports.config = {
     // and
     // https://code.google.com/p/selenium/source/browse/javascript/webdriver/capabilities.js
     capabilities: {
-        'browserName': 'phantomjs'
+        'browserName': 'chrome'
     },
 
     // ----- What tests to run -----
