@@ -30,14 +30,13 @@
 
     //TODO: Validation of model and property. Needs check on database to see if model and property exist.
     schemaName.path('model').validate(function (val) {
-        if ('model' === 'model') {
-            if ('property' === 'property') {
-                return true;
-            }
+        try {
+            return (mongoose.model(val) !== null && mongoose.model(val) !== undefined);
+        } catch (err) {
+            console.log(err.message);
             return false;
         }
-        return false;
-    }, 'ValidateModel');
+    }, 'Model does not exist!');
 
     modelName = "BusinessRule";
     mongoose.model(modelName, schemaName);

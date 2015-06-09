@@ -106,7 +106,7 @@ exports.updateOne = function (req, res) {
             property: req.body.doc.property || '',
             equation: req.body.doc.equation || '',
             expectedValue: req.body.doc.expectedValue || '',
-            modificationDate : Date.now
+            modificationDate : new Date()
         },
         options = {multi: false},
         callback = function (err, doc) {
@@ -121,7 +121,6 @@ exports.updateOne = function (req, res) {
                 doc: update,
                 err: err
             };
-
             return res.send(retObj);
         };
 
