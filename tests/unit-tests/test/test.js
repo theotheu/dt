@@ -1,5 +1,4 @@
 // Load configuration
-
 var env = process.env.NODE_ENV || 'development',
     config = require('../../../server/config/config.js')[env],
     localConfig = require('../../config-test.json')
@@ -216,6 +215,7 @@ describe('API Routing for CRUD operations on users', function () {
                 .expect('Content-Type', /application.json/)                 // supertest
                 .expect('Content-Type', 'utf-8')                            // supertest
                 .end(function (err, res) {
+
                     if (err) {
                         throw err;
                     }
@@ -231,6 +231,7 @@ describe('API Routing for CRUD operations on users', function () {
                         .should.have.property('doc')
                         .and.have.property('email')
                         .be.exactly('john.doe@email.com');
+
 
                     tmpUserId = JSON.parse(res.text).doc._id;
 
@@ -302,7 +303,6 @@ describe('API Routing for CRUD operations on users', function () {
                 .expect('Content-Type', /application.json/)                 // supertest
                 .expect('Content-Type', 'utf-8')                            // supertest
                 .end(function (err, res) {
-                    console.log(res);
                     if (err) {
                         throw err;
                     }
@@ -357,6 +357,196 @@ describe('API Routing for CRUD operations on users', function () {
         it('Should GET /users', function (done) {
             request
                 .get('/users')
+                .expect(200)                                                // supertest
+                .expect('Content-Type', /application.json/)                 // supertest
+                .expect('Content-Type', 'utf-8')                            // supertest
+                .end(function (err, res) {
+                    if (err) {
+                        throw err;
+                    }
+
+                    JSON.parse(res.text)
+                        .should.have.property('meta')
+                        .and.have.property('action').be.exactly('list');
+                    res.statusCode.should.be.exactly(200);
+
+                    done();
+                });
+        });
+    });
+
+});
+
+
+describe('API Routing for CRUD operations on business rules', function () {
+
+    var request = supertest(localConfig.host + ":" + config.port + "/" + localConfig.api_path);
+
+    var tmpRuleId = null;
+    var tmpRuleResponse;
+
+    before(function (done) {
+        done();
+    });
+
+    describe('CREATE rule', function () {
+        it('Should POST /businessRules', function (done) {
+            request
+                .post('/businessRules')
+                .send({
+                    "name": "rule abcxyz",
+                    "model": "books",
+                    "property": "title",
+                    "equation": "like emiel",
+                    "expectedValue": "true"
+                })
+                .expect(200)                                                // supertest
+                .expect('Content-Type', /application.json/)                 // supertest
+                .expect('Content-Type', 'utf-8')                            // supertest
+                .end(function (err, res) {
+                    if (err) {
+                        throw err;
+                    }
+                    JSON.parse(res.text)
+                        .should.have.property('meta')
+                        .and.have.property('action').be.exactly('create');
+                    JSON.parse(res.text)
+                        .should.have.property('err').be.exactly(null);
+                    res.statusCode.should.be.exactly(200);
+                    res.type.should.be.exactly('application/json');
+                    res.charset.should.be.exactly('utf-8');
+                    JSON.parse(res.text)
+                        .should.have.property('doc')
+                        .and.have.property('name')
+                        .be.exactly('rule abcxyz');
+
+                    tmpRuleId = JSON.parse(res.text).doc._id;
+
+                    done();
+                });
+        });
+    });
+
+    describe('RETRIEVE all rules', function () {
+
+        it('Should GET /businessRules', function (done) {
+            request
+                .get('/businessRules')
+                .expect(200)                                                // supertest
+                .expect('Content-Type', /application.json/)                 // supertest
+                .expect('Content-Type', 'utf-8')                            // supertest
+                .end(function (err, res) {
+                    if (err) {
+                        throw err;
+                    }
+
+                    JSON.parse(res.text)
+                        .should.have.property('meta')
+                        .and.have.property('action').be.exactly('list');
+                    res.statusCode.should.be.exactly(200);
+
+                    tmpRuleResponse = res.text;
+
+                    done();
+                });
+        });
+    });
+
+    describe('RETRIEVE 1 rule', function () {
+        it('Should GET /businessRules/{id}', function (done) {
+            request
+                .get('/businessRules/' + tmpRuleId)
+                .expect('Content-Type', /application.json/)
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) {
+                        throw err;
+                    }
+                    JSON.parse(res.text)
+                        .should.have.property('meta')
+                        .and.have.property('action')
+                        .be.exactly('detail');
+                    JSON.parse(res.text)
+                        .should.have.property('doc')
+                        .and.have.property('name')
+                        .be.exactly('rule abcxyz');
+                    res.statusCode.should.be.exactly(200);
+                    done();
+                });
+        });
+    });
+
+    describe('UPDATE 1 rule', function () {
+        it('Should PUT /businessRules/{id}', function (done) {
+            request
+                .put('/businessRules/' + tmpRuleId)
+                .send({
+                    "doc": {
+                        "name": "rule abcxyz - DF",
+                        "model": "books",
+                        "property": "author",
+                        "equation": "equals emiel",
+                        "expectedValue": "true"
+                    }
+                })
+                .expect(200)                                                // supertest
+                .expect('Content-Type', /application.json/)                 // supertest
+                .expect('Content-Type', 'utf-8')                            // supertest
+                .end(function (err, res) {
+                    if (err) {
+                        throw err;
+                    }
+
+                    JSON.parse(res.text)
+                        .should.have.property('meta')
+                        .and.have.property('action')
+                        .be.exactly('update');
+                    JSON.parse(res.text)
+                        .should.have.property('err')
+                        .be.exactly(null);
+                    JSON.parse(res.text)
+                        .should.have.property('doc')
+                        .and.have.property('name')
+                        .be.exactly('rule abcxyz - DF');
+                    res.statusCode.should.be.exactly(200);
+                    done();
+                });
+        });
+    });
+
+    describe('DELETE 1 rule', function () {
+        it('Should DELETE /businessRules/{id}', function (done) {
+            request
+                .del('/businessRules/' + tmpRuleId)
+                .expect(200)                                                // supertest
+                .expect('Content-Type', /application.json/)                 // supertest
+                .expect('Content-Type', 'utf-8')                            // supertest
+                .end(function (err, res) {
+                    if (err) {
+                        throw err;
+                    }
+                    JSON.parse(res.text)
+                        .should.have.property('meta')
+                        .and.have.property('action').be.exactly('delete');
+                    JSON.parse(res.text)
+                        .should.have.property('doc')
+                        .and.have.property('ok')
+                        .be.exactly(1);
+                    JSON.parse(res.text)
+                        .should.have.property('doc')
+                        .and.have.property('n')
+                        .be.exactly(1);
+                    JSON.parse(res.text).should.have.property('err').be.exactly(null);
+                    res.statusCode.should.be.exactly(200);
+                    done();
+                });
+        });
+    });
+
+    describe('RETRIEVE all rules to verify that the original collection is restored.', function () {
+        it('Should GET /businessRules', function (done) {
+            request
+                .get('/businessRules')
                 .expect(200)                                                // supertest
                 .expect('Content-Type', /application.json/)                 // supertest
                 .expect('Content-Type', 'utf-8')                            // supertest
