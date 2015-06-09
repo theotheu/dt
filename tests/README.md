@@ -30,15 +30,6 @@ Run `mocha`
 
 
 # Jmeter tests
-## Install Jmeter
-### Unix
-Run `sudo apt-get install jmeter`
-
-### Mac OSX
-Run `brew install jmeter`
-
-http://jmeter.apache.org/download_jmeter.cgi
-
 ## Adjust jmeter config.js
 Copy ```jmeter.conf.default``` to ```jmeter.conf```.
 
