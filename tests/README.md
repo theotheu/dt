@@ -27,3 +27,22 @@ Run `mocha`
 # End to end tests
 
 ![e2e.png](https://raw.githubusercontent.com/theotheu/books/assets/docs/assets/e2e.png)
+
+
+# Jmeter tests
+## Install Jmeter
+### Unix
+Run `sudo apt-get install jmeter`
+
+### Mac OSX
+Run `brew install jmeter`
+
+http://jmeter.apache.org/download_jmeter.cgi
+
+## Adjust jmeter config.js
+Copy ```config.js.default``` to ```config.js```.
+
+Adjust settings
+
+## Run the tests
+Run `npm test`
