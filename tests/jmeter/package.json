@@ -5,7 +5,7 @@
     "private": true,
     "version": "0.0.1",
     "scripts": {
-        "test": "jmeter -n -t jmeter-test.jmx"
+        "test": "node jmeter.js"
     },
     "engines": {
         "node": "*"
