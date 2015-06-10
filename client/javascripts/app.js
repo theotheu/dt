@@ -1,5 +1,4 @@
-/*global angular, BookListCtrl, BookDetailCtrl, UserListCtrl, UserDetailCtrl, LoginCtrl */
-/*global angular, BookListCtrl, BookDetailCtrl, BusinessRuleListCtrl, BusinessRuleDetailCtrl */
+/*global angular, BookListCtrl, BookDetailCtrl, UserListCtrl, UserDetailCtrl, LoginCtrl, BusinessRuleListCtrl, BusinessRuleDetailCtrl, SettingsCtrl */
 
 /**
  *
@@ -28,7 +27,7 @@ var myApp = angular.module('myApp', ['myApp.books', 'myApp.users', 'ngRoute'])
         });
 
         /** Users **/
-        // Get all users
+            // Get all users
         $routeProvider.when('/users', {
             templateUrl: 'partials/user-list.html',
             controller: UserListCtrl
@@ -48,7 +47,7 @@ var myApp = angular.module('myApp', ['myApp.books', 'myApp.users', 'ngRoute'])
 
         /** BUSINESS RULE PAGES**/
         // Get all business rules
-        $routeProvider.when('/businessRules', {
+        $routeProvider.when('/businessrules', {
             templateUrl: 'partials/businessRules-list.html',
             controller: BusinessRuleListCtrl
         });

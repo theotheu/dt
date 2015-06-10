@@ -1,0 +1,36 @@
+---
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Deeltijd API
+host: server3.tezzt.nl:13000
+basePath: /
+paths:
+  /login:
+    post:
+      responses:
+        200:
+          description: login successfull
+        401:
+          description: error logging in
+      parameters:
+        - name: username
+          in: formData
+          description: Email address of the user
+          type: string
+          required: true
+        - name: password
+          in: formData
+          description: Password of the user
+          type: string
+          required: true
+  /logout:
+    get:
+      responses:
+        200:
+          description: logout
+  /help:
+    get:
+      responses:
+        200:
+          description: this help file
