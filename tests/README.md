@@ -18,6 +18,9 @@ Requirements:
 ## Install mocha
 Run `npm install -g mocha`
 
+## Adjust unittest config-test.json
+Copy ```config-test.json.default``` to ```config-test.json```.
+
 ## Run the tests
 Run `mocha`
 

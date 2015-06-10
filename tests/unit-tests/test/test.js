@@ -6,28 +6,33 @@ var env = process.env.NODE_ENV || 'development',
     ;
 
 var should = require('should'),
-    supertest = require('supertest');
+    supertest = require('supertest'),
+    authentication = require('./authentication');
 
 describe('API Routing for CRUD operations on books', function () {
 
-    var request = supertest(localConfig.host + ":" + config.port + "/" + localConfig.api_path);
+    var request = supertest(localConfig.host + ":" + config.port);
+    var agent;
 
     var tmpBookId = null;
     var tmpBookResponse;
 
     before(function (done) {
-        done();
+        authentication.login(request, function (loginAgent) {
+            agent = loginAgent;
+            done();
+        });
     });
 
     describe('CREATE book', function () {
         it('Should POST /books', function (done) {
-            request
-                .post('/books')
-                .send({
+            var req = request.post('/api/books');
+            agent.attachCookies(req);
+            req.send({
                     "title": "Great book!" + Date.now(),
                     "author": "John Doe",
                     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."}
-                )
+            )
                 .expect(200)                                                // supertest
                 .expect('Content-Type', /application.json/)                 // supertest
                 .expect('Content-Type', 'utf-8')                            // supertest
@@ -58,9 +63,9 @@ describe('API Routing for CRUD operations on books', function () {
     describe('RETRIEVE all books', function () {
 
         it('Should GET /books', function (done) {
-            request
-                .get('/books')
-                .expect(200)                                                // supertest
+            var req = request.get('/api/books');
+            agent.attachCookies(req);
+            req.expect(200)                                                // supertest
                 .expect('Content-Type', /application.json/)                 // supertest
                 .expect('Content-Type', 'utf-8')                            // supertest
                 .end(function (err, res) {
@@ -82,9 +87,9 @@ describe('API Routing for CRUD operations on books', function () {
 
     describe('RETRIEVE 1 book', function () {
         it('Should GET /books/{id}', function (done) {
-            request
-                .get('/books/' + tmpBookId)
-                .expect('Content-Type', /application.json/)
+            var req = request.get('/api/books/' + tmpBookId);
+            agent.attachCookies(req);
+            req.expect('Content-Type', /application.json/)
                 .expect(200)
                 .end(function (err, res) {
                     if (err) {
@@ -106,15 +111,15 @@ describe('API Routing for CRUD operations on books', function () {
 
     describe('UPDATE 1 book', function () {
         it('Should PUT /books/{id}', function (done) {
-            request
-                .put('/books/' + tmpBookId)
-                .send({
-                    "doc": {
-                        "title": "Good book " + Date.now(),
-                        "author": "Ghostwriter",
-                        "description": "Book is updated."
-                    }
-                })
+            var req = request.put('/api/books/' + tmpBookId);
+            agent.attachCookies(req);
+            req.send({
+                "doc": {
+                    "title": "Good book " + Date.now(),
+                    "author": "Ghostwriter",
+                    "description": "Book is updated."
+                }
+            })
                 .expect(200)                                                // supertest
                 .expect('Content-Type', /application.json/)                 // supertest
                 .expect('Content-Type', 'utf-8')                            // supertest
@@ -123,7 +128,7 @@ describe('API Routing for CRUD operations on books', function () {
                         throw err;
                     }
 
-                   JSON.parse(res.text)
+                    JSON.parse(res.text)
                         .should.have.property('meta')
                         .and.have.property('action')
                         .be.exactly('update');
@@ -142,9 +147,9 @@ describe('API Routing for CRUD operations on books', function () {
 
     describe('DELETE 1 book', function () {
         it('Should DELETE /books/{id}', function (done) {
-            request
-                .del('/books/' + tmpBookId)
-                .expect(200)                                                // supertest
+            var req = request.del('/api/books/' + tmpBookId);
+            agent.attachCookies(req);
+            req.expect(200)                                                // supertest
                 .expect('Content-Type', /application.json/)                 // supertest
                 .expect('Content-Type', 'utf-8')                            // supertest
                 .end(function (err, res) {
@@ -171,9 +176,9 @@ describe('API Routing for CRUD operations on books', function () {
 
     describe('RETRIEVE all books to verify that the original collection is restored.', function () {
         it('Should GET /books', function (done) {
-            request
-                .get('/books')
-                .expect(200)                                                // supertest
+            var req = request.get('/api/books');
+            agent.attachCookies(req);
+            req.expect(200)                                                // supertest
                 .expect('Content-Type', /application.json/)                 // supertest
                 .expect('Content-Type', 'utf-8')                            // supertest
                 .end(function (err, res) {
@@ -191,27 +196,37 @@ describe('API Routing for CRUD operations on books', function () {
         });
     });
 
+    after(function (done) {
+        authentication.logout(request, function () {
+            done();
+        });
+    });
+
 });
 
 describe('API Routing for CRUD operations on users', function () {
 
-    var request = supertest(localConfig.host + ":" + config.port + "/" + localConfig.api_path);
+    var request = supertest(localConfig.host + ":" + config.port);
+    var agent;
 
     var tmpUserId = null;
     var tmpUserResponse;
 
     before(function (done) {
-        done();
+        authentication.login(request, function (loginAgent) {
+            agent = loginAgent;
+            done();
+        });
     });
 
     describe('CREATE user', function () {
         it('Should POST /users', function (done) {
-            request
-                .post('/users')
-                .send({
-                    "email": "john.doe@email.com",
-                    "password": "1234567890"
-                })
+            var req = request.post('/api/users');
+            agent.attachCookies(req);
+            req.send({
+                "email": "john.doe@email.com",
+                "password": "1234567890"
+            })
                 .expect(200)                                                // supertest
                 .expect('Content-Type', /application.json/)                 // supertest
                 .expect('Content-Type', 'utf-8')                            // supertest
@@ -242,9 +257,9 @@ describe('API Routing for CRUD operations on users', function () {
     describe('RETRIEVE all users', function () {
 
         it('Should GET /users', function (done) {
-            request
-                .get('/users')
-                .expect(200)                                                // supertest
+            var req = request.get('/api/users');
+            agent.attachCookies(req);
+            req.expect(200)                                                // supertest
                 .expect('Content-Type', /application.json/)                 // supertest
                 .expect('Content-Type', 'utf-8')                            // supertest
                 .end(function (err, res) {
@@ -266,9 +281,9 @@ describe('API Routing for CRUD operations on users', function () {
 
     describe('RETRIEVE 1 user', function () {
         it('Should GET /users/{id}', function (done) {
-            request
-                .get('/users/' + tmpUserId)
-                .expect('Content-Type', /application.json/)
+            var req = request.get('/api/users/' + tmpUserId);
+            agent.attachCookies(req);
+            req.expect('Content-Type', /application.json/)
                 .expect(200)
                 .end(function (err, res) {
                     if (err) {
@@ -290,14 +305,14 @@ describe('API Routing for CRUD operations on users', function () {
 
     describe('UPDATE 1 user', function () {
         it('Should PUT /users/{id}', function (done) {
-            request
-                .put('/users/' + tmpUserId)
-                .send({
-                    "doc": {
-                        "email": "doe.john@emails.com",
-                        "password": "1234567890"
-                    }
-                })
+            var req = request.put('/api/users/' + tmpUserId);
+            agent.attachCookies(req);
+            req.send({
+                "doc": {
+                    "email": "doe.john@emails.com",
+                    "password": "1234567890"
+                }
+            })
                 .expect(200)                                                // supertest
                 .expect('Content-Type', /application.json/)                 // supertest
                 .expect('Content-Type', 'utf-8')                            // supertest
@@ -326,9 +341,9 @@ describe('API Routing for CRUD operations on users', function () {
 
     describe('DELETE 1 user', function () {
         it('Should DELETE /users/{id}', function (done) {
-            request
-                .del('/users/' + tmpUserId)
-                .expect(200)                                                // supertest
+            var req = request.del('/api/users/' + tmpUserId);
+            agent.attachCookies(req);
+            req.expect(200)                                                // supertest
                 .expect('Content-Type', /application.json/)                 // supertest
                 .expect('Content-Type', 'utf-8')                            // supertest
                 .end(function (err, res) {
@@ -355,9 +370,9 @@ describe('API Routing for CRUD operations on users', function () {
 
     describe('RETRIEVE all users to verify that the original collection is restored.', function () {
         it('Should GET /users', function (done) {
-            request
-                .get('/users')
-                .expect(200)                                                // supertest
+            var req = request.get('/api/users');
+            agent.attachCookies(req);
+            req.expect(200)                                                // supertest
                 .expect('Content-Type', /application.json/)                 // supertest
                 .expect('Content-Type', 'utf-8')                            // supertest
                 .end(function (err, res) {
@@ -372,6 +387,12 @@ describe('API Routing for CRUD operations on users', function () {
 
                     done();
                 });
+        });
+    });
+
+    after(function (done) {
+        authentication.logout(request, function () {
+            done();
         });
     });
 
