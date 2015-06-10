@@ -30,20 +30,6 @@
         {collection: 'businessRules'}
     );
 
-    //TODO: Validation of model and property. Needs check on database to see if model and property exist.
-    /*schemaName.path('model').validate(function (val) {
-        try {
-            return (mongoose.model(val) !== null && mongoose.model(val) !== undefined);
-        } catch (err) {
-            console.log(err.message);
-            return false;
-        }
-    }, 'Model does not exist!');
-
-    schemaName.path('property').validation(function (val) {
-        return true;
-    }, 'Property does not exist!');*/
-
     schemaName.pre('validate', function(next) {
         try {
             if (mongoose.model(this.model) !== null && mongoose.model(this.model) !== undefined) {
