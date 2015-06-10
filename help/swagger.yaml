@@ -34,3 +34,94 @@ paths:
       responses:
         200:
           description: this help file
+  /businessrule:
+    get:
+      responses:
+        200:
+          description: List of businessrules or single businessrule
+      parameters:
+        - name: Id
+          in: path
+          description: ID of document
+          type: objectID
+          required: false
+    post:
+      responses:
+        200:
+          description: Save a businessrule
+      parameters:
+        - name: Id
+          in: formData
+          description: ID of the document
+          type: objectID
+          required: true
+        - name: name
+          in: formData
+          description: Name of the business rule
+          type: string
+          required: true
+        - name: model
+          in: formData
+          description: Model rule applies to
+          type: string
+          required: true
+        - name: property
+          in: formData
+          description: Property of model rule applies to
+          type: string
+          required: true
+        - name: equation
+          in: formData
+          description: Type of equation that is applied to the property for comparison
+          type: string
+          required: true
+        - name: expectedValue
+          in: formData
+          description: The value used to compare the property value to.
+          type: string
+          required: true
+    put:
+      responses:
+        200:
+          description: Update a businessrule
+      parameters:
+        - name: Id
+          in: formData
+          description: ID of the document
+          type: objectID
+          required: true
+        - name: name
+          in: formData
+          description: Name of the business rule
+          type: string
+          required: true
+        - name: model
+          in: formData
+          description: Model rule applies to
+          type: string
+          required: true
+        - name: property
+          in: formData
+          description: Property of model rule applies to
+          type: string
+          required: true
+        - name: equation
+          in: formData
+          description: Type of equation that is applied to the property for comparison
+          type: string
+          required: true
+        - name: expectedValue
+          in: formData
+          description: The value used to compare the property value to.
+          type: string
+          required: true
+    delete:
+      responses:
+        200:
+          description: Delete a businessrule
+      parameters:
+        - name: Id
+          in: path
+          description: ID of document
+          type: objectID
+          required: true
