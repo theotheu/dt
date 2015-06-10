@@ -215,7 +215,7 @@ describe('API Routing for CRUD operations on users', function () {
                 .expect('Content-Type', /application.json/)                 // supertest
                 .expect('Content-Type', 'utf-8')                            // supertest
                 .end(function (err, res) {
-
+                    console.log(res);
                     if (err) {
                         throw err;
                     }
