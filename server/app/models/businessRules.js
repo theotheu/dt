@@ -30,14 +30,13 @@
         {collection: 'businessRules'}
     );
 
-    schemaName.pre('validate', function(next) {
+    schemaName.pre('validate', function (next) {
         try {
             if (mongoose.model(this.model) !== null && mongoose.model(this.model) !== undefined) {
                 if (mongoose.model(this.model).schema.path(this.property) !== null && mongoose.model(this.model).schema.path(this.property) !== undefined) {
                     next();
                 }
-            }
-            else {
+            } else {
                 errMsg = new Error('Model and/or property are nonexistent!');
                 next(errMsg);
             }
