@@ -36,7 +36,7 @@
     };
 
     exports.loggedIn = function (req, res) {
-        res.redirect('/');
+        res.sendStatus(200);
     };
 
     exports.serializeUser = function (user, done) {
@@ -66,7 +66,7 @@
 
     exports.logout = function (req, res) {
         req.logout();
-        res.redirect('/');
+        res.sendStatus(200);
     };
 
     exports.example = function (req, res) {

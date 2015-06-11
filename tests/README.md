@@ -18,6 +18,9 @@ Requirements:
 ## Install mocha
 Run `npm install -g mocha`
 
+## Adjust unittest config-test.json
+Copy ```config-test.json.default``` to ```config-test.json```.
+
 ## Run the tests
 Run `mocha`
 
@@ -27,3 +30,13 @@ Run `mocha`
 # End to end tests
 
 ![e2e.png](https://raw.githubusercontent.com/theotheu/books/assets/docs/assets/e2e.png)
+
+
+# Jmeter tests
+## Adjust jmeter config.js
+Copy ```jmeter.conf.default``` to ```jmeter.conf```.
+
+Adjust configuration
+
+## Run the tests
+Run `npm test`

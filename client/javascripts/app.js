@@ -53,7 +53,7 @@ var myApp = angular.module('myApp', ['myApp.books', 'myApp.users', 'ngRoute'])
         });
 
         // Get 1 book
-        $routeProvider.when('/businessRules/:_id', {
+        $routeProvider.when('/businessrules/:_id', {
             templateUrl: 'partials/businessRules-detail.html',
             controller: BusinessRuleDetailCtrl
         });

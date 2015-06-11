@@ -1,9 +1,154 @@
 // Load configuration
 var env = process.env.NODE_ENV || 'development';
 var config = require('../../server/config/config.js')[env],
-    localConfig = require('./../config-test.json');
+    localConfig = require('./../config-test.json'),
+    deploymentConfig = require('../../server/config/config.js')['deployment']
 
 console.log('>>>>>', env, '<<<<<');
+
+describe('test oauth login at google, twitter and facebook', function () {
+    beforeEach(function () {
+        browser.driver.get('http://' + localConfig.host + ':' + config.port + '/logout');
+    });
+
+    it('wrong username and password at google application must redirect to /login', function () {
+        browser.driver.get('http://' + localConfig.host + ':' + config.port + '/auth/google');
+
+        //Login at google page
+        browser.driver.findElement(by.id('Email')).sendKeys('testhamean@gmail.com');
+        browser.driver.findElement(by.id('Passwd')).sendKeys('dCjWTd8W86aIOeVY0RT');
+        browser.driver.findElement(by.id('signIn')).click().then(function() {
+            browser.driver.get('http://' + localConfig.host + ':' + config.port);
+            expect(browser.driver.getCurrentUrl()).toContain('/login');
+        });
+    }, 15000);
+
+    it('wrong username and password at facebook application must redirect to /login', function () {
+        browser.driver.get('http://' + localConfig.host + ':' + config.port + '/auth/facebook');
+
+        //Login at facebook
+        browser.driver.findElement(by.id('email')).sendKeys('testhanean@gmail.com');
+        browser.driver.findElement(by.id('pass')).sendKeys('A6f614b3a29beb9b7b0ffecbd6ae908Aw');
+        browser.driver.findElement(by.id('loginbutton')).click().then(function() {
+            browser.driver.get('http://' + localConfig.host + ':' + config.port);
+            expect(browser.driver.getCurrentUrl()).toContain('/login');
+        });
+    }, 15000);
+
+    it('wrong username and password at twitter application must redirect to /login', function () {
+        browser.driver.get('http://' + localConfig.host + ':' + config.port + '/auth/twitter');
+
+        //Login at twitter
+        browser.driver.findElement(by.id('username_or_email')).sendKeys('testhanmen');
+        browser.driver.findElement(by.id('password')).sendKeys('N4weLbS4H2MezhIKU4a');
+        browser.driver.findElement(by.id('allow')).click().then(function() {
+            browser.driver.get('http://' + localConfig.host + ':' + config.port);
+            expect(browser.driver.getCurrentUrl()).toContain('/login');
+        });
+    }, 15000);
+
+    it('should login at google after that the url must not contain /login', function () {
+        browser.driver.get('http://' + localConfig.host + ':' + config.port + '/auth/google');
+
+        //Login at google page
+        browser.driver.findElement(by.id('Email')).sendKeys('testhanmean@gmail.com');
+        browser.driver.findElement(by.id('Passwd')).sendKeys('dCjWfTd8W86aIOeVY0RT');
+        browser.driver.findElement(by.id('signIn')).click().then(function() {
+            var elementToFind = by.css('#submit_approve_access:not([disabled])'); //what element we are looking for
+            browser.driver.wait(function() {
+                return browser.driver.isElementPresent(elementToFind);
+            }, 5000);
+            browser.driver.findElement(elementToFind).click().then(function() {
+                expect(browser.driver.getCurrentUrl()).not.toContain('/login');
+            });
+        });
+    }, 15000);
+
+    it('should login at facebook after that the url must not contain /login', function () {
+        browser.driver.get('http://' + localConfig.host + ':' + config.port + '/auth/facebook');
+
+        //Login at facebook
+        browser.driver.findElement(by.id('email')).sendKeys('testhanmean@gmail.com');
+        browser.driver.findElement(by.id('pass')).sendKeys('A6f614b3a29beb9b7b0ffecbd6ae908Ad');
+        browser.driver.findElement(by.id('loginbutton')).click().then(function() {
+            expect(browser.driver.getCurrentUrl()).not.toContain('/login');
+        });
+    }, 15000);
+
+    it('should login at twitter after that the url must not contain /login', function () {
+        browser.driver.get('http://' + localConfig.host + ':' + config.port + '/auth/twitter');
+
+        //Login at twitter
+        browser.driver.findElement(by.id('username_or_email')).sendKeys('testhanmean');
+        browser.driver.findElement(by.id('password')).sendKeys('N4weLbS4H2MezhIKU4ad');
+        browser.driver.findElement(by.id('allow')).click().then(function() {
+            expect(browser.driver.getCurrentUrl()).not.toContain('/login');
+        });
+    }, 15000);
+});
+
+describe('DT test login page', function () {
+
+    beforeEach(function () {
+        browser.get('http://' + localConfig.host + ':' + config.port);
+    });
+
+    it('should get the titles', function () {
+
+        expect(browser.getTitle()).toBe('Book demo');
+        expect(element(by.tagName('h1')).getText()).toBe('Book demo');
+        expect(element(by.tagName('h2')).getText()).toBe('Login');
+
+        // Get CSS value
+        element(by.tagName('h1')).getCssValue('color')
+            .then(function (v) {
+                expect(v).toBe('rgba(0, 0, 0, 1)');
+            });
+    });
+
+    /**
+     * @see https://docs.angularjs.org/api/ng/directive/form
+     */
+    it('should display an empty login form', function () {
+        expect(element(by.model('user.username')).getText()).toBe('');
+        expect(element(by.model('user.password')).getText()).toBe('');
+    });
+
+
+    it('should login the user', function () {
+        element(by.model('user.username')).sendKeys('emiel.roelofsen@gmail.com');
+        element(by.model('user.password')).sendKeys('test1234');
+
+        element(by.id('loginBtn')).click();
+
+        // When succesfull login, the books page should be able to show.
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/books');
+        expect(element(by.tagName('h2')).getText()).toBe('Books');
+    });
+
+    it('should logout the user', function () {
+        element(by.id('logoutLink')).click();
+
+        // When successfull logout, the books page should not be able to show.
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/books');
+        expect(element(by.tagName('h2')).getText()).not.toBe('Books');
+    });
+
+    // Make sure to login the user again so the other tests can run as well.
+    it('should login the user again', function () {
+        element(by.model('user.username')).sendKeys('emiel.roelofsen@gmail.com');
+        element(by.model('user.password')).sendKeys('test1234');
+
+        element(by.id('loginBtn')).click();
+
+        // When succesfull login, the books page should be able to show.
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/books');
+        expect(element(by.tagName('h2')).getText()).toBe('Books');
+    });
+});
+
+
+
 
 describe('Book test homepage', function () {
 
@@ -209,8 +354,61 @@ describe('CRUD on book', function () {
         expect(books.count()).toBe(10);
 
     });
+});
 
 
+describe('Deployment test homepage', function () {
+
+    beforeEach(function () {
+        browser.get('http://' + localConfig.host + ':' + deploymentConfig.port);
+    });
+
+    it('should get the titles', function () {
+
+        expect(browser.getTitle()).toBe('Deployment History');
+        expect(element(by.tagName('h1')).getText()).toBe('Deployment History');
+        expect(element(by.tagName('h2')).getText()).toBe('Deployment List');
+
+        // Get CSS value
+        element(by.tagName('h1')).getCssValue('color')
+            .then(function (v) {
+                expect(v).toBe('rgba(0, 0, 0, 1)');
+            });
+
+    });
+
+    it('should count at least one deployment in the list', function () {
+
+        var deployments = element.all(by.repeater('deployment in deployments'));
+
+        expect(deployments.count()).toBeGreaterThan(0);
+
+    });
+
+    it('should filter the deployments and return 1 deployment', function () {
+
+        element(by.model('query')).sendKeys('55743f9012025ec3513e2658');
+
+        var deployments = element.all(by.repeater('deployment in deployments'));
+
+        expect(deployments.count()).toBe(1);
+        expect(deployments.get(0).getText()).toEqual('CRIA DT Test Deployment, 2015-01-01T12:00:00.000Z');
+
+    });
+
+    it('should get the markup of the deployment detail page', function () {
+
+        element.all(by.repeater('deployment in deployments')).get(0).$('a').click();
+
+        expect(browser.getTitle()).toBe('Deployment History');
+        expect(element(by.tagName('h1')).getText()).toBe('Deployment History');
+        expect(element(by.tagName('h2')).getText()).toBe('Deployment Detail');
+        expect(element.all(by.tagName('th')).get(0).getText()).toBe('database ID');
+        expect(element.all(by.tagName('h3')).get(0).getText()).toBe('Static Analyzer test log');
+        expect(element.all(by.tagName('h3')).get(3).getText()).toBe('Bash log');
+        expect(element.all(by.tagName('label')).get(0).getText()).toBe('show results:');
+
+    });
 });
 
 
@@ -486,6 +684,144 @@ describe('CRUD on businessRules', function () {
         expect(nrRulesAfter.count()).toBe((nrRulesBefore));
 
     });
+});
+
+describe('CRUD on businessRules', function () {
+
+    var _id;
+
+    beforeEach(function () {
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessrules/new');
+    });
+
+    it('should get the titles', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessrules/new');
+
+        expect(browser.getTitle()).toBe('Book demo');
+        expect(element(by.tagName('h1')).getText()).toBe('Book demo');
+        expect(element(by.tagName('h2')).getText()).toBe('Business Rule');
+
+        // Get CSS value
+        element(by.tagName('h1')).getCssValue('color')
+            .then(function (v) {
+                expect(v).toBe('rgba(0, 0, 0, 1)');
+            });
+
+    });
+
+    /**
+     * @see https://docs.angularjs.org/api/ng/directive/form
+     */
+    it('should display an empty bueiness rules form', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessrules/new');
+
+        expect(element(by.model('businessRule.doc._id')).getText()).toBe('');
+        expect(element(by.model('businessRule.doc.name')).getText()).toBe('');
+        expect(element(by.model('businessRule.doc.model')).getText()).toBe('');
+        expect(element(by.model('businessRule.doc.property')).getText()).toBe('');
+        expect(element(by.model('businessRule.doc.equation')).getText()).toBe('');
+        expect(element(by.model('businessRule.doc.expectedValue')).getText()).toBe('');
+
+    });
+
+    it('should create a business rule', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessrules/new');
+
+        element(by.model('businessRule.doc.name')).sendKeys('test rule axbycz');
+        element(by.model('businessRule.doc.model')).sendKeys('users');
+        element(by.model('businessRule.doc.property')).sendKeys('email');
+        element(by.model('businessRule.doc.equation')).sendKeys('like gmail.com');
+        element(by.model('businessRule.doc.expectedValue')).sendKeys('true');
+
+        element(by.id('saveBtn')).click();
+
+    });
+
+    it('should query the new created business rule', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessrules');
+
+        element(by.model('query')).sendKeys('test rule axbycz');
+
+        var users = element.all(by.repeater('businessRule in businessRule'));
+
+        expect(users.count()).toBe(1);
+        expect(users.get(0).getText()).toEqual('test rule axbycz, users, email');
+
+    });
+
+    it('should update the new created business rule', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessrules');
+
+        // Find the business rule
+        element(by.model('query')).sendKeys('test rule axbycz');
+
+        expect(element.all(by.repeater('businessRule in businessRule'))
+            .first().getText())
+            .toBe('test rule axbycz, users, email');
 
 
+        // Click on list item (note the nested selector)
+        element.all(by.repeater('businessRule in businessRule')).first().$('a').click();
+
+        // Retrieve id for later retrieval
+        // Issue with retrieving value from input field, @see https://github.com/angular/protractor/issues/140
+        element(by.model('businessRule.doc._id')).getAttribute('value')
+            .then(function (v) {
+                _id = v;
+
+                // Set new values
+                element(by.model('businessRule.doc.model')).clear();
+                element(by.model('businessRule.doc.model')).sendKeys('books');
+                element(by.model('businessRule.doc.property')).clear();
+                element(by.model('businessRule.doc.property')).sendKeys('testProp');
+
+                // Save new values
+                element(by.id('saveBtn')).click();
+
+                // Verify new values
+                browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessrules');
+
+                // Find the user
+                element(by.model('query')).sendKeys(_id);
+
+                expect(element.all(by.repeater('businessRule in businessRule'))
+                    .first().getText())
+                    .toBe('test rule axbycz, books, testProp');
+
+                // browser.pause();
+
+            });
+
+    });
+
+    it('should delete the new created business rule', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessrules');
+
+        // Find the user
+        element(by.model('query')).sendKeys(_id);
+
+        expect(element.all(by.repeater('businessRule in businessRule'))
+            .first().getText())
+            .toBe('test rule axbycz, books, testProp');
+
+        // Click on list item (note the nested selector)
+        element.all(by.repeater('businessRule in businessRule')).first().$('a').click();
+
+        // Delete user
+        element(by.id('deleteBtn')).click();
+
+        // Verify that the number of users is 7
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessrules');
+
+        var users = element.all(by.repeater('businessRule in businessRule'));
+
+        expect(users.count()).toBe(0);
+
+    });
 });

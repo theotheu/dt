@@ -17,7 +17,7 @@ exports.config = {
     // and
     // https://code.google.com/p/selenium/source/browse/javascript/webdriver/capabilities.js
     capabilities: {
-        'browserName': 'phantomjs'
+        'browserName': 'chrome'
     },
 
     // ----- What tests to run -----
@@ -37,7 +37,7 @@ exports.config = {
     framework: 'jasmine2',
     onPrepare: function () {
         jasmine.getEnv().addReporter(new JSONReporter({
-            file: 'e2e_result_log.json',
+            file: 'end-to-end-results.json',
             beautify: true,
             indentationLevel: 4 // used if beautify === true
         }));

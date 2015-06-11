@@ -6,7 +6,7 @@
      * Module dependencies.
      */
     var mongoose = require('mongoose'),
-        bcrypt = require('bcrypt'),
+        bcrypt = require('bcryptjs'),
         Schema = mongoose.Schema,
         schemaName,
         modelName;

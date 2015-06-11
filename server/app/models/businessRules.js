@@ -8,7 +8,9 @@
     var mongoose = require('mongoose'),
         Schema = mongoose.Schema,
         schemaName,
-        modelName;
+        modelName,
+        errMsg;
+
 
     /**
      * Business Rule schema
@@ -27,32 +29,23 @@
         },
         {collection: 'businessRules'}
     );
-    //TODO: Validation
-    schemaName.path('model').validate(function (val) {
-        //TODO: Model needs to exist
-        return true;
-        //return (val !== undefined && val !== null && val.length >= 8);
-    }, 'ValidateModel');
 
-    schemaName.path('property').validate(function (val) {
-        //TODO: Property must exist in model
-        return true;
-    }, 'ValidateProperty');
-
-    //TODO: Merge these 2 validations
-    /**
-     * http://stackoverflow.com/questions/7369326/validating-multiple-mongoose-schema-properties
-     *  if (v === this.password) {
-        return false;
-    } else {
-        return true;
-    }
-     */
-
-    schemaName.path('equation').validate(function (val) {
-        //TODO: equation must be a valid defined equasion
-        return true;
-    }, 'ValidateEquation');
+    schemaName.pre('validate', function (next) {
+        try {
+            if (mongoose.model(this.model) !== null && mongoose.model(this.model) !== undefined) {
+                if (mongoose.model(this.model).schema.path(this.property) !== null && mongoose.model(this.model).schema.path(this.property) !== undefined) {
+                    next();
+                }
+            } else {
+                errMsg = new Error('Model and/or property are nonexistent!');
+                next(errMsg);
+            }
+        } catch (err) {
+            console.log(err.message);
+            errMsg = new Error('Model and/or property are nonexistent!');
+            next(errMsg);
+        }
+    });
 
     modelName = "BusinessRule";
     mongoose.model(modelName, schemaName);

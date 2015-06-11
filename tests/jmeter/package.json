@@ -1,0 +1,21 @@
+{
+    "name": "jmeter-tests",
+    "description": "",
+    "author": "marcowolf",
+    "private": true,
+    "version": "0.0.1",
+    "scripts": {
+        "preinstall": "sudo npm link jmeter-npm ./jmeter-npm",
+        "pretest": "rm -f *.log && rm -f ./logs/*",
+        "test": "./jmeter-npm/node_modules/jmeter/bin/jmeter -n -t jmeter-test.jmx -l ./logs/jmeter-results.jtl",
+        "posttest": "java -jar ./jmeter-npm/node_modules/jmeter/lib/ext/CMDRunner.jar --tool Reporter --generate-png ./logs/test.png --input-jtl ./logs/jmeter-results.jtl --plugin-type ResponseTimesOverTime --width 800 --height 600"
+    },
+    "engines": {
+        "node": "*"
+    },
+    "dependencies": {
+        "jmeter-npm": "*"
+    },
+    "devDependencies": {
+    }
+}

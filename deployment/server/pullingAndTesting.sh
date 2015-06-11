@@ -99,9 +99,9 @@ echo | tee -a "$DIR/$CUR_SCRIPT"
 git checkout $STAGE1 | tee -a "$DIR/$CUR_SCRIPT"
 
 cd $BASEDIR/tests/static-analyzer
-./run_lint.sh > static-analyzer-results.log
+./run_lint.sh
 
-if [ -f $BASEDIR/tests/static-analyzer/error_log.txt ]; then
+if [ -f $BASEDIR/tests/static-analyzer/static-analyzer-error-results.json ]; then
 	echo "`date` >>>>> ERRORS: No commit for branch 'test' was performed." | tee -a "$DIR/$CUR_SCRIPT"
 	echo "`date` >>>>>   Resolve the conflicts before continuing." | tee -a "$DIR/$CUR_SCRIPT"
 	git checkout $STAGE0 | tee -a "$DIR/$CUR_SCRIPT"
@@ -141,10 +141,10 @@ sleep 4
 # Change directory to unit-tests
 cd "$BASEDIR/tests/unit-tests"
 
-rm -f unit-tests-results.log
+rm -f unit-tests-results.json
 
 # Run the unit test
-mocha > unit-tests-results.log
+mocha > unit-tests-results.json
 
 # kill node
 echo "`date` Killing Node.js started with process id = $node_PID" | tee -a $CUR_SCRIPT
@@ -152,7 +152,7 @@ kill -9 $node_PID 2>&1 &
 
 # count fail occurences
 #export TEST_FAILURUES=`grep -ci 'fail' unit-tests-results.log`
-export TEST_FAILURUES=`grep -ci '"failures": 0' unit-tests-results.log`
+export TEST_FAILURUES=`grep -ci '"failures": 0' unit-tests-results.json`
 
 if [ -z "$TEST_FAILURUES" ]; then
     echo "`date` >>>>> ERRORS ERRORS ERRORS" | tee -a "$DIR/$CUR_SCRIPT"
@@ -164,12 +164,12 @@ fi
 if [ $TEST_FAILURUES -ne 1 ]; then
     echo "`date` >>>>> ERRORS ERRORS ERRORS" | tee -a "$DIR/$CUR_SCRIPT"
 	echo "`date` >>>>>   Did not pass the unit-tests with $TEST_FAILURUES errors" | tee -a "$DIR/$CUR_SCRIPT"
-	echo "`date` >>>>>   Fix the erros in unit-tests-results.log" | tee -a "$DIR/$CUR_SCRIPT"
+	echo "`date` >>>>>   Fix the erros in unit-tests-results.json" | tee -a "$DIR/$CUR_SCRIPT"
 	git checkout $STAGE0 | tee -a "$DIR/$CUR_SCRIPT"
 	exit 1
 fi
 
-if [ -f ./test/static-analyzer/error_log.txt ]; then
+if [ -f ./test/static-analyzer/static-analyzer-error-results.json ]; then
 	echo ">>>>> ERRORS: No commit for branch 'test' was performed." | tee -a "$DIR/$CUR_SCRIPT"
 	echo ">>>>>   Resolve the conflicts before continuing." | tee -a "$DIR/$CUR_SCRIPT"
 	git checkout $STAGE0 | tee -a "$DIR/$CUR_SCRIPT"
@@ -227,7 +227,7 @@ fi
 cd "$BASEDIR/tests/e2e"
 echo "`date` Current directory = `pwd`. It should end with e2e." | tee -a $CUR_SCRIPT
 echo "`date` Running the e2e tests." | tee -a $CUR_SCRIPT
-protractor conf.js > end-to-end-results.log
+protractor conf.js
 echo "`date` Finished the e2e tests." | tee -a $CUR_SCRIPT
 
 # kill node process
@@ -239,7 +239,7 @@ echo "`date` No need to kill Selenium. It keeps on running with id=$selenium_PID
 #kill -9 $selenium_PID
 
 # count fail occurences
-export TEST_FAILURUES=`grep -ci ', 0 failures' end-to-end-results.log`
+export TEST_FAILURUES=`grep -ci '"status": "failed"' end-to-end-results.json`
 
 if [ -z "$TEST_FAILURUES" ]; then
     echo "`date` >>>>> ERRORS ERRORS ERRORS" | tee -a "$DIR/$CUR_SCRIPT"
@@ -248,10 +248,10 @@ if [ -z "$TEST_FAILURUES" ]; then
     exit 1
 fi
 
-if [ $TEST_FAILURUES -ne 1 ]; then
+if [ $TEST_FAILURUES -ne 0 ]; then
     echo "`date` >>>>> ERRORS ERRORS ERRORS" | tee -a "$DIR/$CUR_SCRIPT"
 	echo "`date` >>>>>   Did not pass the end-to-end tests." | tee -a "$DIR/$CUR_SCRIPT"
-	echo "`date` >>>>>   Fix the errors in the end-to-end-results.log" | tee -a "$DIR/$CUR_SCRIPT"
+	echo "`date` >>>>>   Fix the errors in the end-to-end-results.json" | tee -a "$DIR/$CUR_SCRIPT"
 	git checkout $STAGE0 | tee -a "$DIR/$CUR_SCRIPT"
 	exit 1
 fi

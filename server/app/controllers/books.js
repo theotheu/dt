@@ -212,7 +212,7 @@ exports.updateOne = function (req, res) {
             author: req.body.doc.author || '',
             description: req.body.doc.description || ''
         },
-        options = {multi: false},
+        options = {multi: false, runValidators: true},
         callback = function (err, doc) {
             var retObj = {
                 meta: {

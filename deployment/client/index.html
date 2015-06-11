@@ -1,12 +1,27 @@
 <!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-    <link rel="stylesheet" href="css/lib/bootstrap/bootstrap-theme.min.css">
-
+<html data-ng-app="myApp">
+<head>
+    <title>Deployment History</title>
+    <link rel="stylesheet" type="text/css" href="css/custom.css">
 </head>
 <body>
+
+<h1>Deployment History</h1>
+
+<a id="homeLink" href="/#/">Home</a>
+
+<div data-ng-view=""></div>
+
+<!-- Lib -->
+<script src="./javascripts/lib/angular.min.js"></script>
+<script src="./javascripts/lib/angular-route.min.js"></script>
+<script src="./javascripts/lib/angular-resource.min.js"></script>
+
+<!-- App -->
+<script src="./javascripts/app.js"></script>
+<script src="./javascripts/controller.js"></script>
+<script src="./javascripts/service.js"></script>
+
 
 </body>
 </html>

@@ -1,0 +1,125 @@
+swagger: '2.0'
+info:
+  version: '1.0.0'
+  title: Deeltijd API
+host: server3.tezzt.nl:13000
+basePath: /
+paths:
+  /deployments:
+    get:
+      summary: Deployments history
+      description: |
+        Returns a list of deployment objects
+      tags:
+        - Deployments
+      responses:
+        200:
+          description: Successful response
+          description: Successful response
+          schema:
+            $ref: '#/definitions/ReturnObjectsArray'
+    post:
+      summary: Deployments history
+      description: |
+        Create a deployment object
+      tags:
+        - Deployments
+      parameters:
+        - name: deployment
+          in: body
+          description: Deploymeny to add to the database
+          required: true
+          schema:
+            $ref: '#/definitions/Deployment'
+      responses:
+        200:
+          description: Successful response
+          schema:
+            $ref: '#/definitions/ReturnObject'
+  /deployments/{_Id}:
+    get:
+      summary: Deployments history
+      description: |
+        Returns a deployment object
+      parameters:
+        - name: _Id
+          in: path
+          description: Id of deployment
+          required: true
+          type: number
+          format: integer
+      tags:
+        - Deployments
+      responses:
+        200:
+          description: Successful response
+          schema:
+            $ref: '#/definitions/ReturnObject'
+    delete:
+      summary: Deployments history
+      description: |
+        Deletes a single deployment object based on supplies ID
+      parameters:
+        - name: _Id
+          in: path
+          description: Id of deployment to delete
+          required: true
+          type: number
+          format: integer
+      tags:
+        - Deployments
+      responses:
+        204:
+          description: Successful delete
+          schema:
+            $ref: '#/definitions/ReturnObject'
+definitions:
+  ReturnObject:
+    properties:
+      meta:
+        type: object
+        description: Metadata like date and type of action
+      doc:
+        $ref: '#/definitions/Deployment'
+        description: Deployment object
+      err:
+        type: object
+        description: Contains error info when error occurs
+  ReturnObjectsArray:
+    properties:
+      meta:
+        type: object
+        description: Metadata like date and type of action
+      doc:
+        type: array
+        items:
+          $ref: '#/definitions/Deployment'
+      err:
+        type: object
+        description: Contains error info when error occurs      
+  Deployment:
+    properties:
+      _Id:
+        type: string
+        description: Database ID
+      deploymentId:
+        type: string
+        description: Deployment ID
+      deploymentResult:
+        type: string
+        description: Deployment failed or succeeded
+      bashLog:
+        type: string
+        description: Log file of executed bash script
+      staticTestLog:
+        type: object
+        description: Log file of static analyzer test
+      unitTestLog:
+        type: object
+        description: Log file of unit tests
+      e2eTestLog:
+        type: object
+        description: Log file of end 2 end tests
+      modificationDate:
+        type: string
+        description: date-time stamp of deployment

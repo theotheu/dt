@@ -133,6 +133,12 @@ crashlytics-build.properties
 # Skip config.js because of passwords
 config.js
 oauth.config.js
+jmeter.conf
+config-test.json
 
 pid
 tests/static-analyzer/error_log.txt
+tests/e2e/e2e_result_log.json
+*results.json
+*.jar
+

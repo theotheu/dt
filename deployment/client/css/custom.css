@@ -1,0 +1,24 @@
+.textfield{
+    white-space: pre-wrap;
+    padding-bottom: 20px;
+    background-color: lightgray;
+}
+
+table{
+    width: 50%;
+    text-align: left;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+th, td{
+    border: 1px solid black;
+}
+
+th{
+    background-color: #0095dd;
+    color: #ffffff;
+}
+h3{
+    background-color: #0000ff;
+    color: #ffffff;
+}

@@ -24,6 +24,21 @@ paths:
           description: Password of the user
           type: string
           required: true
+  /auth/twitter:
+      get:
+        responses:
+          302:
+            description: redirected to the twitter login page
+  /auth/facebook:
+      get:
+        responses:
+          302:
+            description: redirected to the facebook login page
+  /auth/google:
+      get:
+        responses:
+          302:
+            description: redirected to the google login page
   /logout:
     get:
       responses:
@@ -34,3 +49,116 @@ paths:
       responses:
         200:
           description: this help file
+  /users:
+    get:
+      responses:
+        200:
+          description: list of all users or fetch one user
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to get
+          type: string
+          description: adds a new user
+      parameters:
+        - name: username
+          in: formData
+          description: Email address of the user
+          type: string
+          required: true
+        - name: password
+          in: formData
+          description: Password of the user
+          type: string
+          required: true
+  /businessrule:
+    get:
+      responses:
+        200:
+          description: List of businessrules or single businessrule
+      parameters:
+        - name: Id
+          in: path
+          description: ID of document
+          type: objectID
+          required: false
+    post:
+      responses:
+        200:
+          description: Save a businessrule
+      parameters:
+        - name: Id
+          in: formData
+          description: ID of the document
+          type: objectID
+          required: true
+        - name: name
+          in: formData
+          description: Name of the business rule
+          type: string
+          required: true
+        - name: model
+          in: formData
+          description: Model rule applies to
+          type: string
+          required: true
+        - name: property
+          in: formData
+          description: Property of model rule applies to
+          type: string
+          required: true
+        - name: equation
+          in: formData
+          description: Type of equation that is applied to the property for comparison
+          type: string
+          required: true
+        - name: expectedValue
+          in: formData
+          description: The value used to compare the property value to.
+          type: string
+          required: true
+    put:
+      responses:
+        200:
+          description: Update a businessrule
+      parameters:
+        - name: Id
+          in: formData
+          description: ID of the document
+          type: objectID
+          required: true
+        - name: name
+          in: formData
+          description: Name of the business rule
+          type: string
+          required: true
+        - name: model
+          in: formData
+          description: Model rule applies to
+          type: string
+          required: true
+        - name: property
+          in: formData
+          description: Property of model rule applies to
+          type: string
+          required: true
+        - name: equation
+          in: formData
+          description: Type of equation that is applied to the property for comparison
+          type: string
+          required: true
+        - name: expectedValue
+          in: formData
+          description: The value used to compare the property value to.
+          type: string
+          required: true
+    delete:
+      responses:
+        200:
+          description: Delete a businessrule
+      parameters:
+        - name: Id
+          in: path
+          description: ID of document
+          type: objectID
+          required: true
