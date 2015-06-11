@@ -5,7 +5,47 @@ var config = require('../../server/config/config.js')[env],
 
 console.log('>>>>>', env, '<<<<<');
 
-describe('test oauth implementation', function () {
+describe('test oauth login at google, twitter and facebook', function () {
+    beforeEach(function () {
+        browser.driver.get('http://' + localConfig.host + ':' + config.port + '/logout');
+    });
+
+    it('wrong username and password at google application must redirect to /login', function () {
+        browser.driver.get('http://' + localConfig.host + ':' + config.port + '/auth/google');
+
+        //Login at google page
+        browser.driver.findElement(by.id('Email')).sendKeys('testhamean@gmail.com');
+        browser.driver.findElement(by.id('Passwd')).sendKeys('dCjWTd8W86aIOeVY0RT');
+        browser.driver.findElement(by.id('signIn')).click().then(function() {
+            browser.driver.get('http://' + localConfig.host + ':' + config.port);
+            expect(browser.driver.getCurrentUrl()).toContain('/login');
+        });
+    }, 15000);
+
+    it('wrong username and password at facebook application must redirect to /login', function () {
+        browser.driver.get('http://' + localConfig.host + ':' + config.port + '/auth/facebook');
+
+        //Login at facebook
+        browser.driver.findElement(by.id('email')).sendKeys('testhanean@gmail.com');
+        browser.driver.findElement(by.id('pass')).sendKeys('A6f614b3a29beb9b7b0ffecbd6ae908Aw');
+        browser.driver.findElement(by.id('loginbutton')).click().then(function() {
+            browser.driver.get('http://' + localConfig.host + ':' + config.port);
+            expect(browser.driver.getCurrentUrl()).toContain('/login');
+        });
+    }, 15000);
+
+    it('wrong username and password at twitter application must redirect to /login', function () {
+        browser.driver.get('http://' + localConfig.host + ':' + config.port + '/auth/twitter');
+
+        //Login at twitter
+        browser.driver.findElement(by.id('username_or_email')).sendKeys('testhanmen');
+        browser.driver.findElement(by.id('password')).sendKeys('N4weLbS4H2MezhIKU4a');
+        browser.driver.findElement(by.id('allow')).click().then(function() {
+            browser.driver.get('http://' + localConfig.host + ':' + config.port);
+            expect(browser.driver.getCurrentUrl()).toContain('/login');
+        });
+    }, 15000);
+
     it('should login at google after that the url must not contain /login', function () {
         browser.driver.get('http://' + localConfig.host + ':' + config.port + '/auth/google');
 
