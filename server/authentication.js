@@ -7,8 +7,8 @@
         session = require('express-session'),
         LocalStrategy = require('passport-local').Strategy,
         GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
-        //TwitterStrategy = require('passport-twitter').Strategy,
-        //FacebookStrategy = require('passport-facebook').Strategy,
+        TwitterStrategy = require('passport-twitter').Strategy,
+        FacebookStrategy = require('passport-facebook').Strategy,
         controller = require('./app/controllers/authentication.js');
 
     module.exports = function (app, env) {
@@ -30,7 +30,7 @@
             )
         );
 
-       /* passport.use(
+        passport.use(
             'twitter',
             new TwitterStrategy(
                 {
@@ -40,9 +40,9 @@
                 },
                 controller.twitterLogin
             )
-        );*/
+        );
 
-       /* passport.use(
+        passport.use(
             'facebook',
             new FacebookStrategy(
                 {
@@ -52,7 +52,7 @@
                 },
                 controller.facebookLogin
             )
-        );*/
+        );
 
         passport.use(
             'login',
