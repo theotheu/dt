@@ -98,7 +98,6 @@ exports.detail = function (req, res) {
  * @param res http response
  */
 exports.updateOne = function (req, res) {
-//TODO: Fix this.
     var conditions =
         {_id: req.params._id},
         update = {
@@ -107,9 +106,9 @@ exports.updateOne = function (req, res) {
             property: req.body.doc.property || '',
             equation: req.body.doc.equation || '',
             expectedValue: req.body.doc.expectedValue || '',
-            modificationDate : Date.now
+            modificationDate : new Date()
         },
-        options = {multi: false},
+        options = {multi: false, runValidators: true},
         callback = function (err, doc) {
             var retObj = {
                 meta: {
@@ -122,7 +121,6 @@ exports.updateOne = function (req, res) {
                 doc: update,
                 err: err
             };
-
             return res.send(retObj);
         };
 

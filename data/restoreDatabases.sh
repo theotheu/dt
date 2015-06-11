@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # deeltijd-prd keeps its data
-for db in S513753-dev S513753-tst S513753-acc
+for db in deeltijd-dev deeltijd-tst deeltijd-acc
 do
     echo "Dropping $db"
     mongo $db --eval "db.dropDatabase()"
