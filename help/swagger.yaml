@@ -24,6 +24,21 @@ paths:
           description: Password of the user
           type: string
           required: true
+  /auth/twitter:
+      get:
+        responses:
+          302:
+            description: redirected to the twitter login page
+  /auth/facebook:
+      get:
+        responses:
+          302:
+            description: redirected to the facebook login page
+  /auth/google:
+      get:
+        responses:
+          302:
+            description: redirected to the google login page
   /logout:
     get:
       responses:
