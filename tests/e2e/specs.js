@@ -1,7 +1,8 @@
 // Load configuration
 var env = process.env.NODE_ENV || 'development';
 var config = require('../../server/config/config.js')[env],
-    localConfig = require('./../config-test.json');
+    localConfig = require('./../config-test.json'),
+    deploymentConfig = require('../../server/config/config.js')['deployment']
 
 console.log('>>>>>', env, '<<<<<');
 
@@ -346,8 +347,61 @@ describe('CRUD on book', function () {
         expect(books.count()).toBe(10);
 
     });
+});
 
 
+describe('Deployment test homepage', function () {
+
+    beforeEach(function () {
+        browser.get('http://' + localConfig.host + ':' + deploymentConfig.port);
+    });
+
+    it('should get the titles', function () {
+
+        expect(browser.getTitle()).toBe('Deployment History');
+        expect(element(by.tagName('h1')).getText()).toBe('Deployment History');
+        expect(element(by.tagName('h2')).getText()).toBe('Deployment List');
+
+        // Get CSS value
+        element(by.tagName('h1')).getCssValue('color')
+            .then(function (v) {
+                expect(v).toBe('rgba(0, 0, 0, 1)');
+            });
+
+    });
+
+    it('should count at least one deployment in the list', function () {
+
+        var deployments = element.all(by.repeater('deployment in deployments'));
+
+        expect(deployments.count()).toBeGreaterThan(0);
+
+    });
+
+    it('should filter the deployments and return 1 deployment', function () {
+
+        element(by.model('query')).sendKeys('55743f9012025ec3513e2658');
+
+        var deployments = element.all(by.repeater('deployment in deployments'));
+
+        expect(deployments.count()).toBe(1);
+        expect(deployments.get(0).getText()).toEqual('CRIA DT Test Deployment, 2015-01-01T12:00:00.000Z');
+
+    });
+
+    it('should get the markup of the deployment detail page', function () {
+
+        element.all(by.repeater('deployment in deployments')).get(0).$('a').click();
+
+        expect(browser.getTitle()).toBe('Deployment History');
+        expect(element(by.tagName('h1')).getText()).toBe('Deployment History');
+        expect(element(by.tagName('h2')).getText()).toBe('Deployment Detail');
+        expect(element.all(by.tagName('th')).get(0).getText()).toBe('database ID');
+        expect(element.all(by.tagName('h3')).get(0).getText()).toBe('Static Analyzer test log');
+        expect(element.all(by.tagName('h3')).get(3).getText()).toBe('Bash log');
+        expect(element.all(by.tagName('label')).get(0).getText()).toBe('show results:');
+
+    });
 });
 
 

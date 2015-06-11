@@ -1,0 +1,8 @@
+<h2>Deployment List</h2>
+<input ng-model="query" placeholder="Type to start searching...">
+
+<ul id="deploymentList">
+    <li data-ng-repeat="deployment in deployments.doc | filter:query">
+        <a href="/#/deployments/{{deployment._id}}">{{deployment.deploymentId}}, {{deployment.modificationDate}}</a>
+    </li>
+</ul>

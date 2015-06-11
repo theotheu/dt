@@ -13,7 +13,7 @@
     "superagent": "*"
   },
   "scripts": {
-    "test": "mocha > unit-tests-results.log"
+    "test": "mocha > unit-tests-results.json"
   },
   "engines": {
     "node": "*"

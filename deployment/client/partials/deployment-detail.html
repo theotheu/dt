@@ -1,0 +1,257 @@
+<h2>Deployment Detail</h2>
+
+<div>
+    <table>
+        <tr>
+            <th>database ID</th>
+            <td>{{deployments.doc._id}}</td>
+        </tr>
+        <tr>
+            <th>deployment ID</th>
+            <td>{{deployments.doc.deploymentId}}</td>
+        </tr>
+        <tr>
+            <th>timestamp</th>
+            <td>{{deployments.doc.modificationDate}}</td>
+        </tr>
+        <tr>
+            <th>deployment result</th>
+            <td>{{deployments.doc.deploymentResult}}</td>
+        </tr>
+    </table>
+</div>
+
+
+<h3>Static Analyzer test log</h3>
+<label>show results: <input type="checkbox" ng-model="staticChecked" ng-init="checked=false"/></label>
+
+<span ng-if="staticChecked">
+
+    <div ng-show="deployments.doc.staticTestLog.noFile">
+        <h4>{{deployments.doc.staticTestLog.noFile.noFileText}}</h4>
+    </div>
+
+    <div ng-hide="deployments.doc.staticTestLog.noFile">
+
+        <h4>STATISTICS</h4>
+        <table>
+            <tr>
+                <th>error count</th>
+                <td>{{deployments.doc.staticTestLog.totalErrors}}</td>
+            </tr>
+            <tr>
+                <th>file count</th>
+                <td>{{deployments.doc.staticTestLog.totalFiles}}</td>
+            </tr>
+            <tr>
+                <th>line count jslint</th>
+                <td>{{deployments.doc.staticTestLog.lineCounts.jslint}}</td>
+            </tr>
+            <tr>
+                <th>line count jshint</th>
+                <td>{{deployments.doc.staticTestLog.lineCounts.jshint}}</td>
+            </tr>
+            <tr>
+                <th>line count esprima</th>
+                <td>{{deployments.doc.staticTestLog.lineCounts.esprima}}</td>
+            </tr>
+        </table>
+
+        <h4>JSLINT ERRORS ({{deployments.doc.staticTestLog.jslint.length}})</h4>
+        <div ng-repeat="jslinterror in deployments.doc.staticTestLog.jslint">
+            <table>
+                <tr>
+                    <th>error</th>
+                    <td>{{jslinterror.reason}}</td>
+                </tr>
+                <tr>
+                    <th>file</th>
+                    <td>{{jslinterror.file}}</td>
+                </tr>
+                <tr>
+                    <th>location</th>
+                    <td>line {{jslinterror.line}} character {{jslinterror.character}}</td>
+                </tr>
+            </table>
+            <br>
+        </div>
+
+        <h4>JSHINT ERRORS ({{deployments.doc.staticTestLog.jshint.length}})</h4>
+        <div ng-repeat="jshinterror in deployments.doc.staticTestLog.jshint">
+            <table>
+                <tr>
+                    <th>error</th>
+                    <td>{{jshinterror.reason}}</td>
+                </tr>
+                <tr>
+                    <th>file</th>
+                    <td>{{jshinterror.file}}</td>
+                </tr>
+                <tr>
+                    <th>location</th>
+                    <td>line {{jshinterror.line}} character {{jshinterror.character}}</td>
+                </tr>
+            </table>
+            <br>
+        </div>
+
+        <h4>ESPRIMA ERRORS ({{deployments.doc.staticTestLog.esprima.length}})</h4>
+        <div ng-repeat="esprimaerror in deployments.doc.staticTestLog.esprima">
+            <table>
+                <tr>
+                    <th>error</th>
+                    <td>{{esprimaerror.reason}}</td>
+                </tr>
+                <tr>
+                    <th>file</th>
+                    <td>{{esprimaerror.file}}</td>
+                </tr>
+                <tr>
+                    <th>location</th>
+                    <td>line {{esprimaerror.line}} character {{esprimaerror.character}}</td>
+                </tr>
+            </table>
+            <br>
+        </div>
+    </div>
+</span>
+<a href="" ng-click="staticChecked=false" ng-show="staticChecked">hide results</a>
+
+
+<h3>Unit test log</h3>
+<label>show results: <input type="checkbox" ng-model="unitChecked" ng-init="checked=false"/></label>
+
+<span ng-if="unitChecked">
+
+    <div ng-show="deployments.doc.unitTestLog.noFile">
+        <h4>{{deployments.doc.unitTestLog.noFile.noFileText}}</h4>
+    </div>
+
+    <div ng-hide="deployments.doc.unitTestLog.noFile">
+
+        <h4>STATISTICS</h4>
+        <table>
+            <tr data-ng-repeat="(key, value) in deployments.doc.unitTestLog.stats">
+                <th>{{key}}</th>
+                <td>{{value}}</td>
+            </tr>
+        </table>
+
+        <h4>TESTS ({{deployments.doc.unitTestLog.tests.length}})</h4>
+
+        <div ng-repeat="test in deployments.doc.unitTestLog.tests">
+            <h4>{{test.title}}</h4>
+            --> {{test.fullTitle}}
+        </div>
+
+        <h4>PENDING ({{deployments.doc.unitTestLog.pending.length}})</h4>
+
+        <div ng-repeat="pending in deployments.doc.unitTestLog.pending">
+            <table>
+                <tr>
+                    <th>Test</th>
+                    <td>{{pending.title}}</td>
+                </tr>
+                <tr>
+                    <th>Error</th>
+                    <td>{{pending.err}}</td>
+                </tr>
+            </table>
+            <br>
+        </div>
+
+        <h4>FAILURES ({{deployments.doc.unitTestLog.failures.length}})</h4>
+
+        <div ng-repeat="failure in deployments.doc.unitTestLog.failures">
+            <table>
+                <tr>
+                    <th>Test</th>
+                    <td>{{failure.title}}</td>
+                </tr>
+                <tr ng-repeat="(key, value) in failure.err">
+                    <th>{{key}}</th>
+                    <td>{{value}}</td>
+                </tr>
+            </table>
+            <br>
+        </div>
+
+        <h4>PASSES ({{deployments.doc.unitTestLog.passes.length}})</h4>
+
+        <div ng-repeat="pass in deployments.doc.unitTestLog.passes">
+            <table>
+                <tr>
+                    <th>Test</th>
+                    <td>{{pass.title}}</td>
+                </tr>
+                <tr>
+                    <th>Duration</th>
+                    <td>{{pass.duration}} ms</td>
+                </tr>
+                <tr>
+                    <th>Error</th>
+                    <td>{{pass.err}}</td>
+                </tr>
+            </table>
+            <br>
+        </div>
+    </div>
+</span>
+<a href="" ng-click="unitChecked=false" ng-show="unitChecked">hide results</a>
+
+
+<h3>End 2 end test log</h3>
+<label>show results: <input type="checkbox" ng-model="e2eChecked" ng-init="checked=false"/></label>
+
+<span ng-if="e2eChecked">
+
+    <div ng-show="deployments.doc.e2eTestLog.noFile">
+        <h4>{{deployments.doc.e2eTestLog.noFile.noFileText}}</h4>
+    </div>
+
+    <div ng-repeat="deployment in deployments.doc.e2eTestLog" ng-hide="deployments.doc.e2eTestLog.noFile">
+        <h4>{{deployment.id}} --> {{deployment.description}} </h4>
+
+        <div ng-repeat="spec in deployment.specs">
+            <h4>{{spec.id}} - {{spec.fullName}}</h4>
+            <table>
+                <tr>
+                    <th>Status</th>
+                    <th colspan="2">Pending reason</th>
+                </tr>
+                <tr>
+                    <td>{{spec.status}}</td>
+                    <td colspan="2">{{spec.pendingReason}}</td>
+                </tr>
+                <tr>
+                    <th>Matcher name</th>
+                    <th>Message</th>
+                    <th>Test passed?</th>
+                </tr>
+                <tr ng-repeat="passed in spec.passedExpectations">
+                    <td>{{passed.matcherName}}</td>
+                    <td>{{passed.message}}</td>
+                    <td>{{passed.passed}}</td>
+                </tr>
+                <tr ng-repeat="failed in spec.failedExpectations">
+                    <td>{{failed.matcherName}}</td>
+                    <td>{{failed.message}}</td>
+                    <td>{{failed.passed}}</td>
+                </tr>
+            </table>
+            <br>
+        </div>
+    </div>
+</span>
+<a href="" ng-click="e2eChecked=false" ng-show="e2eChecked">hide results</a>
+
+
+<h3>Bash log</h3>
+<label>show results: <input type="checkbox" ng-model="bashChecked" ng-init="checked=false"/></label>
+<span ng-if="bashChecked">
+    <div class="textfield">
+        {{deployments.doc.bashLog}}
+    </div>
+</span>
+<br>
+<a href="" ng-click="bashChecked=false" ng-show="bashChecked">hide results</a>

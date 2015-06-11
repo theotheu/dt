@@ -181,7 +181,7 @@ var config = {
         ],
 
         logFile: {
-            name: 'error_log.txt',
+            name: 'static-analyzer-error-results.json',
             type: 'json'
         },
 
