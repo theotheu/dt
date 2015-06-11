@@ -346,3 +346,139 @@ describe('CRUD on user', function () {
 
 
 });
+
+
+
+describe('CRUD on businessRules', function () {
+
+    var _id;
+
+    beforeEach(function () {
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessRules/new');
+    });
+
+    it('should get the titles', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessRules/new');
+
+        expect(browser.getTitle()).toBe('Book demo');
+        expect(element(by.tagName('h1')).getText()).toBe('Book demo');
+        expect(element(by.tagName('h2')).getText()).toBe('Business Rule');
+    });
+
+    /**
+     * @see https://docs.angularjs.org/api/ng/directive/form
+     */
+    it('should display an empty form', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessRules/new');
+
+        expect(element(by.model('businessRule.doc._id')).getText()).toBe('');
+        expect(element(by.model('businessRule.doc.name')).getText()).toBe('');
+        expect(element(by.model('businessRule.doc.model')).getText()).toBe('');
+        expect(element(by.model('businessRule.doc.property')).getText()).toBe('');
+        expect(element(by.model('businessRule.doc.equation')).getText()).toBe('');
+        expect(element(by.model('businessRule.doc.expectedValue')).getText()).toBe('');
+
+    });
+
+    it('should create a business rule', function () {
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessRules/new');
+
+        element(by.model('businessRule.doc.name')).sendKeys('e2e_test_rule');
+        element(by.model('businessRule.doc.model')).sendKeys('Book');
+        element(by.model('businessRule.doc.property')).sendKeys('title');
+        element(by.model('businessRule.doc.equation')).sendKeys('!=');
+        element(by.model('businessRule.doc.expectedValue')).sendKeys('forbiddenValue');
+
+        element(by.id('saveBtn')).click();
+
+    });
+
+    it('should query the new created business rule', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessRules');
+
+        element(by.model('query')).sendKeys('e2e_test_rule');
+
+        var businessRules = element.all(by.repeater('businessRule in businessRules'));
+
+        expect(businessRules.count()).toBe(1);
+        expect(businessRules.get(0).getText()).toEqual('e2e_test_rule');
+
+    });
+
+    it('should update the new created rule', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessRules');
+
+        // Find the user
+        element(by.model('query')).sendKeys('e2e_test_rule');
+
+        expect(element.all(by.repeater('businessRule in businessRules'))
+            .first().getText())
+            .toBe('e2e_test_rule');
+
+
+        // Click on list item (note the nested selector)
+        element.all(by.repeater('businessRule in businessRules')).first().$('a').click();
+
+        // Retrieve id for later retrieval
+        // Issue with retrieving value from input field, @see https://github.com/angular/protractor/issues/140
+        element(by.model('businessRule.doc._id')).getAttribute('value')
+            .then(function (v) {
+                _id = v;
+
+                // Set new values
+                element(by.model('businessRule.doc.title')).clear();
+                element(by.model('businessRule.doc.email')).sendKeys('e2e_test_rule_edit');
+
+                // Save new values
+                element(by.id('saveBtn')).click();
+
+                // Verify new values
+                browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessRules');
+
+                // Find the user
+                element(by.model('query')).sendKeys(_id);
+
+                expect(element.all(by.repeater('businessRule in businessRules'))
+                    .first().getText())
+                    .toBe('e2e_test_rule_edit');
+
+                // browser.pause();
+
+            });
+
+    });
+
+    it('should delete the new created business rule', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessRules');
+
+        // Find the rule
+        element(by.model('query')).sendKeys(_id);
+
+        var nrRulesBefore = element.all(by.repeater('businessRule in businessRules')).count();
+
+        expect(element.all(by.repeater('businessRule in businessRules'))
+            .first().getText())
+            .toBe('e2e_test_rule');
+
+        // Click on list item (note the nested selector)
+        element.all(by.repeater('businessRule in businessRules')).first().$('a').click();
+
+        // Delete rule
+        element(by.id('deleteBtn')).click();
+
+        // Verify that the number of users is 7
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/users');
+
+        var nrRulesAfter = element.all(by.repeater('businessRule in businessRules'));
+
+        expect(nrRulesAfter.count()).toBe((nrRulesBefore - 1));
+
+    });
+
+
+});
