@@ -86,7 +86,6 @@ describe('test oauth login at google, twitter and facebook', function () {
     }, 15000);
 });
 
-/*
 describe('Book test homepage', function () {
 
     beforeEach(function () {
@@ -278,4 +277,3 @@ describe('CRUD on book', function () {
 
     });
 });
-*/
