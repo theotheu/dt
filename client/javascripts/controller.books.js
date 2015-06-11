@@ -1,6 +1,5 @@
 /*jslint node: true */
-/*globals myApp */
-
+/*globals myApp, angular */
 
 /**
  * TODO: create controller for book list
@@ -59,14 +58,18 @@ function LoginCtrl($scope, $location, loginService) {
     "use strict";
 
     $scope.login = function () {
-        loginService.login({}, $scope.user);
-        $location.path("/");
+        var e, settingsScope;
+
+        loginService.login({}, $scope.user, function () {
+            e = document.getElementById('settingsCtrl');
+            settingsScope = angular.element(e).scope();
+            settingsScope.status = loginService.status();
+            $location.path('/');
+        });
     };
 }
 
-myApp.controller('myCtrl', function ($scope) {
+myApp.controller('settingsCtrl', function ($scope, loginService) {
     "use strict";
-    // TODO: bind settings with whoami
-    $scope.whomai = "theotheu";
+    $scope.status = loginService.status();
 });
-

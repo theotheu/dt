@@ -1,6 +1,15 @@
-TODO:
 
+#LET OP
+De unit en e2e doen het niet ivm authenticatie op de API's.
+
+Schrijf unit en e2e tests voor je eigen API.
+
+
+#ALLEN
 * ALLEN: uitzoeken dat alleen de webhook werkt op de development branch en niet op andere branches
+* ALLEN: Documenteer _eigen_ API op http://server3.tezzt.nl:8080/#/ en http://server3.tezzt.nl/~dt -> help/swagger.yaml
+
+
 * Joost: opslaan van deployment tests CRUD afmaken in nieuwe controller + UI (in angular)
 * Joost: unit + e2e voor deployments
 * Marco: Integratie authenticatie met user database 
@@ -12,7 +21,17 @@ TODO:
 * Sander: twitter en facebook integreren + UI + tonen naam in UI
 * Sander: e2e op authenticatie
 
-TIP: Gebruik voor de API documentatie swagger.io
+voor 11 juni
+* Sander: OAuth unit test
+* Joost: Verder gaan met bovenstaande
+* Tim: Validatie uitwerken plus tests
+* Marco: Lokaal inloggen tests / strestest jmeter
+* Michiel: Via Tim
+* Emiel: Meer testen
+
+LET OP!!!!!
+Volgende week (11 juni) is laatste les. Dan worden de punten gegeven. NO SHOW = NO GRADE!!!!!
+
 
 
 
