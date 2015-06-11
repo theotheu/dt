@@ -5,6 +5,69 @@ var config = require('../../server/config/config.js')[env],
 
 console.log('>>>>>', env, '<<<<<');
 
+describe('DT test login page', function () {
+
+    beforeEach(function () {
+        browser.get('http://' + localConfig.host + ':' + config.port);
+    });
+
+    it('should get the titles', function () {
+
+        expect(browser.getTitle()).toBe('Book demo');
+        expect(element(by.tagName('h1')).getText()).toBe('Book demo');
+        expect(element(by.tagName('h2')).getText()).toBe('Login');
+
+        // Get CSS value
+        element(by.tagName('h1')).getCssValue('color')
+            .then(function (v) {
+                expect(v).toBe('rgba(0, 0, 0, 1)');
+            });
+    });
+
+    /**
+     * @see https://docs.angularjs.org/api/ng/directive/form
+     */
+    it('should display an empty login form', function () {
+        expect(element(by.model('user.username')).getText()).toBe('');
+        expect(element(by.model('user.password')).getText()).toBe('');
+    });
+
+
+    it('should login the user', function () {
+        element(by.model('user.username')).sendKeys('emiel.roelofsen@gmail.com');
+        element(by.model('user.password')).sendKeys('test1234');
+
+        element(by.id('loginBtn')).click();
+
+        // When succesfull login, the books page should be able to show.
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/books');
+        expect(element(by.tagName('h2')).getText()).toBe('Books');
+    });
+
+    it('should logout the user', function () {
+        element(by.id('logoutLink')).click();
+
+        // When successfull logout, the books page should not be able to show.
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/books');
+        expect(element(by.tagName('h2')).getText()).not.toBe('Books');
+    });
+
+    // Make sure to login the user again so the other tests can run as well.
+    it('should login the user again', function () {
+        element(by.model('user.username')).sendKeys('emiel.roelofsen@gmail.com');
+        element(by.model('user.password')).sendKeys('test1234');
+
+        element(by.id('loginBtn')).click();
+
+        // When succesfull login, the books page should be able to show.
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/books');
+        expect(element(by.tagName('h2')).getText()).toBe('Books');
+    });
+});
+
+
+
+
 describe('Book test homepage', function () {
 
     beforeEach(function () {
@@ -343,6 +406,145 @@ describe('CRUD on user', function () {
         expect(users.count()).toBe(7);
 
     });
-
-
 });
+
+describe('CRUD on businessRules', function () {
+
+    var _id;
+
+    beforeEach(function () {
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessrules/new');
+    });
+
+    it('should get the titles', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessrules/new');
+
+        expect(browser.getTitle()).toBe('Book demo');
+        expect(element(by.tagName('h1')).getText()).toBe('Book demo');
+        expect(element(by.tagName('h2')).getText()).toBe('Business Rule');
+
+        // Get CSS value
+        element(by.tagName('h1')).getCssValue('color')
+            .then(function (v) {
+                expect(v).toBe('rgba(0, 0, 0, 1)');
+            });
+
+    });
+
+    /**
+     * @see https://docs.angularjs.org/api/ng/directive/form
+     */
+    it('should display an empty bueiness rules form', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessrules/new');
+
+        expect(element(by.model('businessRule.doc._id')).getText()).toBe('');
+        expect(element(by.model('businessRule.doc.name')).getText()).toBe('');
+        expect(element(by.model('businessRule.doc.model')).getText()).toBe('');
+        expect(element(by.model('businessRule.doc.property')).getText()).toBe('');
+        expect(element(by.model('businessRule.doc.equation')).getText()).toBe('');
+        expect(element(by.model('businessRule.doc.expectedValue')).getText()).toBe('');
+
+    });
+
+    it('should create a business rule', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessrules/new');
+
+        element(by.model('businessRule.doc.name')).sendKeys('test rule axbycz');
+        element(by.model('businessRule.doc.model')).sendKeys('users');
+        element(by.model('businessRule.doc.property')).sendKeys('email');
+        element(by.model('businessRule.doc.equation')).sendKeys('like gmail.com');
+        element(by.model('businessRule.doc.expectedValue')).sendKeys('true');
+
+        element(by.id('saveBtn')).click();
+
+    });
+
+    it('should query the new created business rule', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessrules');
+
+        element(by.model('query')).sendKeys('test rule axbycz');
+
+        var users = element.all(by.repeater('businessRule in businessRule'));
+
+        expect(users.count()).toBe(1);
+        expect(users.get(0).getText()).toEqual('test rule axbycz, users, email');
+
+    });
+
+    it('should update the new created business rule', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessrules');
+
+        // Find the business rule
+        element(by.model('query')).sendKeys('test rule axbycz');
+
+        expect(element.all(by.repeater('businessRule in businessRule'))
+            .first().getText())
+            .toBe('test rule axbycz, users, email');
+
+
+        // Click on list item (note the nested selector)
+        element.all(by.repeater('businessRule in businessRule')).first().$('a').click();
+
+        // Retrieve id for later retrieval
+        // Issue with retrieving value from input field, @see https://github.com/angular/protractor/issues/140
+        element(by.model('businessRule.doc._id')).getAttribute('value')
+            .then(function (v) {
+                _id = v;
+
+                // Set new values
+                element(by.model('businessRule.doc.model')).clear();
+                element(by.model('businessRule.doc.model')).sendKeys('books');
+                element(by.model('businessRule.doc.property')).clear();
+                element(by.model('businessRule.doc.property')).sendKeys('testProp');
+
+                // Save new values
+                element(by.id('saveBtn')).click();
+
+                // Verify new values
+                browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessrules');
+
+                // Find the user
+                element(by.model('query')).sendKeys(_id);
+
+                expect(element.all(by.repeater('businessRule in businessRule'))
+                    .first().getText())
+                    .toBe('test rule axbycz, books, testProp');
+
+                // browser.pause();
+
+            });
+
+    });
+
+    it('should delete the new created business rule', function () {
+
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessrules');
+
+        // Find the user
+        element(by.model('query')).sendKeys(_id);
+
+        expect(element.all(by.repeater('businessRule in businessRule'))
+            .first().getText())
+            .toBe('test rule axbycz, books, testProp');
+
+        // Click on list item (note the nested selector)
+        element.all(by.repeater('businessRule in businessRule')).first().$('a').click();
+
+        // Delete user
+        element(by.id('deleteBtn')).click();
+
+        // Verify that the number of users is 7
+        browser.get('http://' + localConfig.host + ':' + config.port + '/#/businessrules');
+
+        var users = element.all(by.repeater('businessRule in businessRule'));
+
+        expect(users.count()).toBe(0);
+
+    });
+});
+
